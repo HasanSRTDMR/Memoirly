@@ -46,9 +46,18 @@ Future<bool> _journalFirestoreProbe(String uid) async {
   }
 }
 
+Future<void> _applyImmersiveSticky() {
+  return SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  await _applyImmersiveSticky();
+  SystemChrome.setSystemUIChangeCallback((systemOverlaysAreVisible) async {
+    if (systemOverlaysAreVisible) {
+      await _applyImmersiveSticky();
+    }
+  });
   final prefs = await SharedPreferences.getInstance();
 
   late final AuthRepository authRepo;
