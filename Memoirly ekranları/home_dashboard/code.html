@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500;1,6..72,600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-bright": "#f9f9f7",
+                        "tertiary-dim": "#5f5142",
+                        "surface-tint": "#5f5e5e",
+                        "surface-dim": "#d4dcd8",
+                        "error-container": "#fe8983",
+                        "primary-fixed-dim": "#d6d4d3",
+                        "inverse-surface": "#0d0f0e",
+                        "surface": "#f9f9f7",
+                        "error": "#9f403d",
+                        "on-error": "#fff7f6",
+                        "primary": "#5f5e5e",
+                        "on-primary-fixed-variant": "#5c5b5b",
+                        "on-tertiary-fixed": "#504234",
+                        "secondary-container": "#dfe5cf",
+                        "on-surface": "#2d3432",
+                        "on-primary-fixed": "#403f3f",
+                        "primary-dim": "#535252",
+                        "tertiary-fixed-dim": "#eed9c6",
+                        "on-background": "#2d3432",
+                        "inverse-primary": "#ffffff",
+                        "tertiary": "#6c5c4d",
+                        "on-secondary-fixed": "#3c4131",
+                        "primary-container": "#e5e2e1",
+                        "outline": "#767c79",
+                        "tertiary-container": "#fde7d3",
+                        "surface-variant": "#dee4e0",
+                        "secondary-fixed-dim": "#d1d7c1",
+                        "tertiary-fixed": "#fde7d3",
+                        "secondary-fixed": "#dfe5cf",
+                        "on-primary-container": "#525151",
+                        "on-tertiary-fixed-variant": "#6d5e4f",
+                        "secondary-dim": "#4f5544",
+                        "surface-container": "#ecefec",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#fff7f3",
+                        "on-secondary": "#f6fce5",
+                        "on-primary": "#faf7f6",
+                        "on-secondary-fixed-variant": "#585e4c",
+                        "inverse-on-surface": "#9c9d9b",
+                        "on-error-container": "#752121",
+                        "on-secondary-container": "#4e5443",
+                        "primary-fixed": "#e5e2e1",
+                        "background": "#f9f9f7",
+                        "secondary": "#5b6150",
+                        "surface-container-high": "#e5e9e6",
+                        "outline-variant": "#adb3b0",
+                        "error-dim": "#4e0309",
+                        "on-surface-variant": "#5a605e",
+                        "on-tertiary-container": "#635445",
+                        "surface-container-highest": "#dee4e0",
+                        "surface-container-low": "#f2f4f2"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Newsreader"],
+                        "label": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #f9f9f7;
+            color: #2d3432;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-label antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center bg-[#f9f9f7]/80 dark:bg-stone-900/80 backdrop-blur-xl z-50">
+<div class="flex items-center gap-4">
+<button class="p-2 text-stone-800 dark:text-stone-200 hover:bg-stone-100/50 dark:hover:bg-stone-800/50 transition-colors duration-300 rounded-full active:opacity-70 active:scale-95">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-['Newsreader'] italic text-2xl text-stone-900 dark:text-stone-50 tracking-tight">The Archive</h1>
+</div>
+<button class="p-2 text-stone-800 dark:text-stone-200 hover:bg-stone-100/50 dark:hover:bg-stone-800/50 transition-colors duration-300 rounded-full active:opacity-70 active:scale-95">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-2xl mx-auto space-y-12">
+<!-- Hero Greeting -->
+<section class="space-y-1">
+<p class="text-on-surface-variant font-label text-sm uppercase tracking-widest font-bold">Monday, October 21</p>
+<h2 class="font-body italic text-4xl text-on-surface">Good evening, Journaler</h2>
+</section>
+<!-- Start Writing Card -->
+<section>
+<div class="group relative overflow-hidden rounded-[2.5rem] bg-surface-container-lowest p-8 flex flex-col items-start space-y-6 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.04)] transition-all duration-500 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.06)]">
+<div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-secondary-container/20 rounded-full blur-3xl group-hover:bg-tertiary-container/30 transition-colors duration-700"></div>
+<div class="relative z-10 w-full">
+<h3 class="font-body italic text-3xl text-on-surface mb-2">Capture your thoughts</h3>
+<p class="font-label text-on-surface-variant text-sm leading-relaxed max-w-xs">A blank page is an invitation to clarity. What's on your mind tonight?</p>
+</div>
+<button class="relative z-10 px-8 py-3 bg-gradient-to-r from-primary to-primary-dim text-on-primary rounded-full font-label font-semibold text-sm tracking-wide transition-transform duration-200 active:scale-95">
+                    Start Writing
+                </button>
+</div>
+</section>
+<!-- Mood Chips (Signature Component) -->
+<section class="space-y-4">
+<div class="flex justify-between items-center">
+<h4 class="font-label text-xs uppercase tracking-[0.2em] font-extrabold text-on-surface-variant/70">Reflect on today</h4>
+</div>
+<div class="flex overflow-x-auto pb-4 gap-3 no-scrollbar -mx-6 px-6">
+<div class="flex-none px-6 py-2.5 bg-secondary-container text-on-secondary-container rounded-full text-sm font-medium transition-colors hover:bg-secondary-fixed-dim cursor-pointer">Peaceful</div>
+<div class="flex-none px-6 py-2.5 bg-tertiary-container text-on-tertiary-container rounded-full text-sm font-medium transition-colors hover:bg-tertiary-fixed-dim cursor-pointer">Reflective</div>
+<div class="flex-none px-6 py-2.5 bg-surface-container-high text-on-surface-variant rounded-full text-sm font-medium transition-colors hover:bg-surface-variant cursor-pointer">Productive</div>
+<div class="flex-none px-6 py-2.5 bg-surface-container-high text-on-surface-variant rounded-full text-sm font-medium transition-colors hover:bg-surface-variant cursor-pointer">Anxious</div>
+<div class="flex-none px-6 py-2.5 bg-secondary-container text-on-secondary-container rounded-full text-sm font-medium transition-colors hover:bg-secondary-fixed-dim cursor-pointer">Grateful</div>
+</div>
+</section>
+<!-- Recent Entries -->
+<section class="space-y-8">
+<h4 class="font-label text-xs uppercase tracking-[0.2em] font-extrabold text-on-surface-variant/70">The Recent Archive</h4>
+<div class="space-y-6">
+<!-- Entry 1 -->
+<article class="group cursor-pointer">
+<div class="flex items-start gap-6">
+<div class="flex flex-col items-center pt-1">
+<span class="text-2xl">🌿</span>
+<div class="w-0.5 h-16 bg-surface-variant mt-2 rounded-full"></div>
+</div>
+<div class="flex-1 space-y-2">
+<div class="flex justify-between items-start">
+<h5 class="font-body italic text-xl text-on-surface">Walking through the old park</h5>
+<span class="text-[10px] font-label uppercase tracking-tighter text-on-surface-variant pt-1 font-bold">10:42 PM</span>
+</div>
+<p class="font-body text-on-surface-variant text-lg leading-relaxed line-clamp-2 italic">
+                                The air was crisp, carrying the scent of drying leaves. I noticed how the light hit the fountain at exactly 4:30 PM...
+                            </p>
+<div class="flex gap-2 pt-2">
+<span class="text-[10px] font-label text-primary font-bold tracking-widest uppercase">#nature</span>
+<span class="text-[10px] font-label text-primary font-bold tracking-widest uppercase">#clarity</span>
+</div>
+</div>
+</div>
+</article>
+<!-- Entry 2 -->
+<article class="group cursor-pointer">
+<div class="flex items-start gap-6">
+<div class="flex flex-col items-center pt-1">
+<span class="text-2xl">☕</span>
+<div class="w-0.5 h-16 bg-surface-variant mt-2 rounded-full opacity-30"></div>
+</div>
+<div class="flex-1 space-y-2">
+<div class="flex justify-between items-start">
+<h5 class="font-body italic text-xl text-on-surface">Morning rituals and new ideas</h5>
+<span class="text-[10px] font-label uppercase tracking-tighter text-on-surface-variant pt-1 font-bold">08:15 AM</span>
+</div>
+<p class="font-body text-on-surface-variant text-lg leading-relaxed line-clamp-2 italic">
+                                Started reading that new architecture book. It made me think about how we structure our internal spaces too...
+                            </p>
+<div class="flex gap-2 pt-2">
+<span class="text-[10px] font-label text-primary font-bold tracking-widest uppercase">#creative</span>
+<span class="text-[10px] font-label text-primary font-bold tracking-widest uppercase">#ritual</span>
+</div>
+</div>
+</div>
+</article>
+<!-- Entry 3 (Minimal/Tonal Shift Card Pattern) -->
+<article class="bg-surface-container-low p-6 rounded-3xl transition-all duration-300 hover:bg-surface-container-high cursor-pointer">
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-xl">🌙</span>
+<span class="text-[10px] font-label uppercase tracking-tighter text-on-surface-variant font-bold">Yesterday</span>
+</div>
+<p class="font-body text-on-surface text-lg leading-relaxed italic">
+                            "Silence is the sleep that nourishes wisdom." A thought from the midnight hour.
+                        </p>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-surface-bright rounded-full text-[9px] font-label font-bold text-on-surface-variant uppercase tracking-widest">#nightthoughts</span>
+</div>
+</div>
+</article>
+</div>
+</section>
+</main>
+<!-- FAB -->
+<button class="fixed right-6 bottom-32 w-14 h-14 bg-secondary text-on-secondary rounded-full flex items-center justify-center shadow-[0_24px_24px_rgba(0,0,0,0.04)] z-40 transition-transform duration-200 active:scale-90">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 bg-[#f9f9f7]/80 dark:bg-stone-950/80 backdrop-blur-2xl rounded-t-[2rem] shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
+<!-- Home (Active) -->
+<a class="flex flex-col items-center justify-center text-stone-900 dark:text-white bg-stone-200/50 dark:bg-stone-800/50 rounded-full px-4 py-2 group transition-all duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">home_app_logo</span>
+<span class="font-['Manrope'] text-[10px] uppercase tracking-widest font-bold">Home</span>
+</a>
+<!-- Search -->
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-600 px-4 py-2 hover:text-stone-600 dark:hover:text-stone-300 group transition-all duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1">search</span>
+<span class="font-['Manrope'] text-[10px] uppercase tracking-widest font-bold">Search</span>
+</a>
+<!-- Calendar -->
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-600 px-4 py-2 hover:text-stone-600 dark:hover:text-stone-300 group transition-all duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1">calendar_today</span>
+<span class="font-['Manrope'] text-[10px] uppercase tracking-widest font-bold">Calendar</span>
+</a>
+<!-- Insights -->
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-600 px-4 py-2 hover:text-stone-600 dark:hover:text-stone-300 group transition-all duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1">analytics</span>
+<span class="font-['Manrope'] text-[10px] uppercase tracking-widest font-bold">Insights</span>
+</a>
+<!-- Settings -->
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-600 px-4 py-2 hover:text-stone-600 dark:hover:text-stone-300 group transition-all duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined mb-1">settings</span>
+<span class="font-['Manrope'] text-[10px] uppercase tracking-widest font-bold">Settings</span>
+</a>
+</nav>
+</body></html>

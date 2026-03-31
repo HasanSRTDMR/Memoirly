@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500;1,6..72,600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "surface-bright": "#f9f9f7",
+                "tertiary-dim": "#5f5142",
+                "surface-tint": "#5f5e5e",
+                "surface-dim": "#d4dcd8",
+                "error-container": "#fe8983",
+                "primary-fixed-dim": "#d6d4d3",
+                "inverse-surface": "#0d0f0e",
+                "surface": "#f9f9f7",
+                "error": "#9f403d",
+                "on-error": "#fff7f6",
+                "primary": "#5f5e5e",
+                "on-primary-fixed-variant": "#5c5b5b",
+                "on-tertiary-fixed": "#504234",
+                "secondary-container": "#dfe5cf",
+                "on-surface": "#2d3432",
+                "on-primary-fixed": "#403f3f",
+                "primary-dim": "#535252",
+                "tertiary-fixed-dim": "#eed9c6",
+                "on-background": "#2d3432",
+                "inverse-primary": "#ffffff",
+                "tertiary": "#6c5c4d",
+                "on-secondary-fixed": "#3c4131",
+                "primary-container": "#e5e2e1",
+                "outline": "#767c79",
+                "tertiary-container": "#fde7d3",
+                "surface-variant": "#dee4e0",
+                "secondary-fixed-dim": "#d1d7c1",
+                "tertiary-fixed": "#fde7d3",
+                "secondary-fixed": "#dfe5cf",
+                "on-primary-container": "#525151",
+                "on-tertiary-fixed-variant": "#6d5e4f",
+                "secondary-dim": "#4f5544",
+                "surface-container": "#ecefec",
+                "surface-container-lowest": "#ffffff",
+                "on-tertiary": "#fff7f3",
+                "on-secondary": "#f6fce5",
+                "on-primary": "#faf7f6",
+                "on-secondary-fixed-variant": "#585e4c",
+                "inverse-on-surface": "#9c9d9b",
+                "on-error-container": "#752121",
+                "on-secondary-container": "#4e5443",
+                "primary-fixed": "#e5e2e1",
+                "background": "#f9f9f7",
+                "secondary": "#5b6150",
+                "surface-container-high": "#e5e9e6",
+                "outline-variant": "#adb3b0",
+                "error-dim": "#4e0309",
+                "on-surface-variant": "#5a605e",
+                "on-tertiary-container": "#635445",
+                "surface-container-highest": "#dee4e0",
+                "surface-container-low": "#f2f4f2"
+              },
+              fontFamily: {
+                "headline": ["Manrope"],
+                "body": ["Newsreader"],
+                "label": ["Manrope"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-label min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center bg-[#f9f9f7]/80 dark:bg-stone-900/80 backdrop-blur-xl z-50">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-stone-800 dark:text-stone-200 cursor-pointer p-2 hover:bg-stone-100/50 rounded-full transition-colors" data-icon="menu">menu</span>
+<h1 class="font-['Newsreader'] italic text-2xl text-stone-900 dark:text-stone-50 tracking-tight">The Archive</h1>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-stone-800 dark:text-stone-200 cursor-pointer p-2 hover:bg-stone-100/50 rounded-full transition-colors" data-icon="account_circle">account_circle</span>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto space-y-12">
+<!-- Header Section -->
+<section class="space-y-2">
+<h2 class="font-body italic text-4xl text-on-surface tracking-tight">Settings</h2>
+<p class="font-label text-sm text-on-surface-variant tracking-wide">Configure your private sanctuary</p>
+</section>
+<!-- Security Section -->
+<section class="space-y-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="security">security</span>
+<h3 class="font-headline font-bold uppercase tracking-[0.2em] text-[10px] text-on-surface-variant">Security</h3>
+</div>
+<div class="space-y-1 bg-surface-container-low rounded-3xl overflow-hidden">
+<div class="flex items-center justify-between p-6 bg-surface-container-low hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="space-y-1">
+<p class="font-headline font-semibold text-sm">Passcode Lock</p>
+<p class="font-body italic text-sm text-on-surface-variant">Require a PIN to open the app</p>
+</div>
+<div class="w-12 h-6 bg-primary/20 rounded-full relative p-1 transition-colors">
+<div class="w-4 h-4 bg-primary rounded-full translate-x-6"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-6 bg-surface-container-low hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="space-y-1">
+<p class="font-headline font-semibold text-sm">Biometric Authentication</p>
+<p class="font-body italic text-sm text-on-surface-variant">Use Face ID or Touch ID</p>
+</div>
+<div class="w-12 h-6 bg-surface-variant rounded-full relative p-1 transition-colors">
+<div class="w-4 h-4 bg-on-surface-variant rounded-full"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Appearance Section -->
+<section class="space-y-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="palette">palette</span>
+<h3 class="font-headline font-bold uppercase tracking-[0.2em] text-[10px] text-on-surface-variant">Appearance</h3>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-6 bg-surface-container-lowest rounded-3xl border-2 border-primary space-y-4 cursor-pointer">
+<div class="aspect-video bg-surface-bright rounded-xl border border-outline-variant/20 flex items-center justify-center">
+<div class="w-2/3 h-1 bg-primary/10 rounded-full"></div>
+</div>
+<div class="flex items-center justify-between">
+<p class="font-headline font-semibold text-sm">Light Mode</p>
+<span class="material-symbols-outlined text-primary text-lg" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</div>
+<div class="p-6 bg-surface-container-low rounded-3xl space-y-4 cursor-pointer hover:bg-surface-container-high transition-colors">
+<div class="aspect-video bg-stone-900 rounded-xl flex items-center justify-center">
+<div class="w-2/3 h-1 bg-stone-700 rounded-full"></div>
+</div>
+<div class="flex items-center justify-between">
+<p class="font-headline font-semibold text-sm text-on-surface-variant">Dark Mode</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Data Section -->
+<section class="space-y-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="database">database</span>
+<h3 class="font-headline font-bold uppercase tracking-[0.2em] text-[10px] text-on-surface-variant">Data Management</h3>
+</div>
+<div class="space-y-1 bg-surface-container-low rounded-3xl overflow-hidden">
+<div class="flex items-center justify-between p-6 hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined text-xl" data-icon="picture_as_pdf">picture_as_pdf</span>
+</div>
+<p class="font-headline font-semibold text-sm">Export as PDF</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-6 hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-xl" data-icon="description">description</span>
+</div>
+<p class="font-headline font-semibold text-sm">Export as TXT</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-6 hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined text-xl" data-icon="cloud_download">cloud_download</span>
+</div>
+<p class="font-headline font-semibold text-sm">Local Backup</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- About Section -->
+<section class="pt-8 pb-12 border-t border-outline-variant/10 text-center space-y-6">
+<div class="inline-flex items-center gap-2 px-4 py-2 bg-secondary-container text-on-secondary-container rounded-full">
+<span class="material-symbols-outlined text-sm" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<p class="text-[11px] font-bold uppercase tracking-wider">Privacy First</p>
+</div>
+<div class="max-w-xs mx-auto">
+<p class="font-body italic text-lg text-on-surface">"Your data never leaves your device."</p>
+<p class="font-label text-[10px] text-on-surface-variant mt-4 uppercase tracking-[0.2em]">The Archive v2.4.0</p>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 bg-[#f9f9f7]/80 dark:bg-stone-950/80 backdrop-blur-2xl rounded-t-[2rem] shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-600 px-4 py-2 hover:text-stone-600 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home_app_logo">home_app_logo</span>
+<span class="font-['Manrope'] text-[10px] uppercase tracking-widest font-bold">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-600 px-4 py-2 hover:text-stone-600 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="search">search</span>
+<span class="font-['Manrope'] text-[10px] uppercase tracking-widest font-bold">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-600 px-4 py-2 hover:text-stone-600 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="calendar_today">calendar_today</span>
+<span class="font-['Manrope'] text-[10px] uppercase tracking-widest font-bold">Calendar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-600 px-4 py-2 hover:text-stone-600 transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="analytics">analytics</span>
+<span class="font-['Manrope'] text-[10px] uppercase tracking-widest font-bold">Insights</span>
+</a>
+<a class="flex flex-col items-center justify-center text-stone-900 dark:text-white bg-stone-200/50 dark:bg-stone-800/50 rounded-full px-4 py-2" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="settings" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-['Manrope'] text-[10px] uppercase tracking-widest font-bold">Settings</span>
+</a>
+</nav>
+</body></html>

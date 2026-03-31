@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>New Entry | The Archive</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500;1,6..72,600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-bright": "#f9f9f7",
+                        "tertiary-dim": "#5f5142",
+                        "surface-tint": "#5f5e5e",
+                        "surface-dim": "#d4dcd8",
+                        "error-container": "#fe8983",
+                        "primary-fixed-dim": "#d6d4d3",
+                        "inverse-surface": "#0d0f0e",
+                        "surface": "#f9f9f7",
+                        "error": "#9f403d",
+                        "on-error": "#fff7f6",
+                        "primary": "#5f5e5e",
+                        "on-primary-fixed-variant": "#5c5b5b",
+                        "on-tertiary-fixed": "#504234",
+                        "secondary-container": "#dfe5cf",
+                        "on-surface": "#2d3432",
+                        "on-primary-fixed": "#403f3f",
+                        "primary-dim": "#535252",
+                        "tertiary-fixed-dim": "#eed9c6",
+                        "on-background": "#2d3432",
+                        "inverse-primary": "#ffffff",
+                        "tertiary": "#6c5c4d",
+                        "on-secondary-fixed": "#3c4131",
+                        "primary-container": "#e5e2e1",
+                        "outline": "#767c79",
+                        "tertiary-container": "#fde7d3",
+                        "surface-variant": "#dee4e0",
+                        "secondary-fixed-dim": "#d1d7c1",
+                        "tertiary-fixed": "#fde7d3",
+                        "secondary-fixed": "#dfe5cf",
+                        "on-primary-container": "#525151",
+                        "on-tertiary-fixed-variant": "#6d5e4f",
+                        "secondary-dim": "#4f5544",
+                        "surface-container": "#ecefec",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#fff7f3",
+                        "on-secondary": "#f6fce5",
+                        "on-primary": "#faf7f6",
+                        "on-secondary-fixed-variant": "#585e4c",
+                        "inverse-on-surface": "#9c9d9b",
+                        "on-error-container": "#752121",
+                        "on-secondary-container": "#4e5443",
+                        "primary-fixed": "#e5e2e1",
+                        "background": "#f9f9f7",
+                        "secondary": "#5b6150",
+                        "surface-container-high": "#e5e9e6",
+                        "outline-variant": "#adb3b0",
+                        "error-dim": "#4e0309",
+                        "on-surface-variant": "#5a605e",
+                        "on-tertiary-container": "#635445",
+                        "surface-container-highest": "#dee4e0",
+                        "surface-container-low": "#f2f4f2"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Newsreader"],
+                        "label": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            font-size: 20px;
+        }
+        .writing-canvas::placeholder {
+            color: #adb3b0;
+            font-style: italic;
+        }
+        .writing-canvas:focus {
+            outline: none;
+        }
+        body {
+            background-color: #f9f9f7;
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body text-on-surface overflow-hidden">
+<!-- TopAppBar from JSON Logic -->
+<header class="fixed top-0 left-0 w-full px-6 py-4 flex justify-between items-center bg-[#f9f9f7]/80 dark:bg-stone-900/80 backdrop-blur-xl z-50">
+<div class="flex items-center gap-4">
+<button class="p-2 text-stone-500 hover:bg-stone-100/50 rounded-full transition-colors duration-300 active:opacity-70 active:scale-95">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<span class="font-['Newsreader'] text-xl italic tracking-tight text-stone-800">New Entry</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-['Manrope'] text-[10px] uppercase tracking-[0.2em] text-on-surface-variant mr-4">Auto-saving...</span>
+<button class="px-6 py-2 bg-primary text-on-primary font-label font-semibold rounded-xl hover:bg-primary-dim transition-all duration-300 active:scale-95">
+                Save
+            </button>
+</div>
+</header>
+<!-- Main Content Area (The Writing Canvas) -->
+<main class="h-screen w-full pt-28 pb-40 px-6 md:px-0 flex justify-center overflow-y-auto">
+<article class="w-full max-w-2xl flex flex-col">
+<!-- Metadata Header -->
+<div class="flex justify-between items-end mb-12 select-none">
+<div class="flex flex-col">
+<h2 class="font-headline font-extrabold text-stone-900 text-3xl tracking-tight">October 24, 2023</h2>
+<p class="font-label text-xs uppercase tracking-widest text-on-surface-variant mt-1">Tuesday • 10:42 PM</p>
+</div>
+<div class="hidden md:block">
+<span class="material-symbols-outlined text-outline-variant" data-icon="cloud_done">cloud_done</span>
+</div>
+</div>
+<!-- Text Input Area -->
+<div class="flex-grow">
+<textarea autofocus="" class="writing-canvas w-full h-full bg-transparent border-none p-0 resize-none font-body text-xl md:text-2xl leading-[1.8] text-on-surface placeholder-stone-300" placeholder="Write your thoughts..."></textarea>
+</div>
+</article>
+</main>
+<!-- Footer Controls (Contextual Floating Shell) -->
+<footer class="fixed bottom-0 left-0 w-full z-50 pointer-events-none">
+<div class="max-w-3xl mx-auto px-6 pb-8">
+<div class="bg-surface-container-low/95 backdrop-blur-2xl rounded-[2.5rem] p-4 shadow-[0_-8px_40px_rgba(0,0,0,0.06)] border border-surface-variant/20 pointer-events-auto">
+<div class="flex flex-col gap-4">
+<!-- Mood & Tags Row -->
+<div class="flex flex-col md:flex-row items-center justify-between gap-4 px-2">
+<!-- Mood Cloud Signature Component -->
+<div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mr-2">Mood</span>
+<button class="h-10 w-10 flex items-center justify-center rounded-full bg-secondary-container text-on-secondary-container hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="sentiment_very_satisfied">sentiment_very_satisfied</span>
+</button>
+<button class="h-10 w-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="sentiment_satisfied">sentiment_satisfied</span>
+</button>
+<button class="h-10 w-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="sentiment_neutral">sentiment_neutral</span>
+</button>
+<button class="h-10 w-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="sentiment_dissatisfied">sentiment_dissatisfied</span>
+</button>
+<button class="h-10 w-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="sentiment_very_dissatisfied">sentiment_very_dissatisfied</span>
+</button>
+</div>
+<div class="h-px w-full md:h-8 md:w-px bg-surface-variant/50 hidden md:block"></div>
+<!-- Tag Input -->
+<div class="flex items-center gap-3 w-full md:w-auto flex-grow px-2">
+<span class="material-symbols-outlined text-outline-variant" data-icon="sell">sell</span>
+<input class="bg-transparent border-none focus:ring-0 font-label text-sm text-on-surface w-full placeholder-outline-variant" placeholder="Add #tags..." type="text"/>
+</div>
+</div>
+<!-- Utility Actions (Optional Editorial Touch) -->
+<div class="flex items-center justify-center gap-8 border-t border-surface-variant/20 pt-3">
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="image">image</span>
+<span class="font-label text-xs font-medium">Add Memory</span>
+</button>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="location_on">location_on</span>
+<span class="font-label text-xs font-medium">London, UK</span>
+</button>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="lock">lock</span>
+<span class="font-label text-xs font-medium">Private</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</footer>
+<!-- Background Decoration (Soft Tonal Shifts) -->
+<div class="fixed top-[-10%] right-[-10%] w-[40%] h-[40%] bg-tertiary-container/20 rounded-full blur-[120px] -z-10"></div>
+<div class="fixed bottom-[-5%] left-[-5%] w-[30%] h-[30%] bg-secondary-container/20 rounded-full blur-[100px] -z-10"></div>
+</body></html>
