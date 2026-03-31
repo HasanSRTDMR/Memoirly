@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:memoirly/app/app_router.dart';
@@ -19,8 +22,33 @@ import 'package:memoirly/domain/repositories/journal_repository.dart';
 import 'package:memoirly/firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Fails when Firestore is not provisioned, rules block reads, or server is unreachable.
+///
+/// Must use [Source.server]: default `.get()` can succeed from an empty local cache
+/// even when the project has no Firestore database, so the app would wrongly stay
+/// on [FirebaseJournalRepository] and every real read/write would then fail.
+Future<bool> _journalFirestoreProbe(String uid) async {
+  try {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('journalEntries')
+        .limit(1)
+        .get(const GetOptions(source: Source.server))
+        .timeout(const Duration(seconds: 12));
+    return true;
+  } on TimeoutException catch (e) {
+    debugPrint('Firestore probe timeout: $e');
+    return false;
+  } catch (e, st) {
+    debugPrint('Firestore probe failed (using local archive): $e\n$st');
+    return false;
+  }
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   final prefs = await SharedPreferences.getInstance();
 
   late final AuthRepository authRepo;
@@ -30,15 +58,25 @@ Future<void> main() async {
   try {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     final firebaseAuth = FirebaseAuth.instance;
-    authRepo = FirebaseAuthRepository(firebaseAuth);
-    await authRepo.signInAnonymously();
+    // Do not assign [authRepo] until Firestore probe passes — otherwise [catch]
+    // cannot replace it ([late final] allows only one assignment).
+    final firebaseAuthRepo = FirebaseAuthRepository(firebaseAuth);
+    await firebaseAuthRepo.signInAnonymously();
+    final uid = await firebaseAuthRepo.getCurrentUserId();
+    if (uid == null) {
+      throw StateError('Anonymous sign-in returned no user id');
+    }
+    if (!await _journalFirestoreProbe(uid)) {
+      throw StateError('Firestore not usable for this project or device');
+    }
+    authRepo = firebaseAuthRepo;
     journalRepo = FirebaseJournalRepository(
       firestore: FirebaseFirestore.instance,
       userIdResolver: authRepo.getCurrentUserId,
     );
     backend = AppBackend.firebase;
   } catch (e, st) {
-    debugPrint('Firebase unavailable, using local backend: $e\n$st');
+    debugPrint('Firebase cloud journal unavailable, using local backend: $e\n$st');
     authRepo = LocalAuthRepository(prefs);
     await authRepo.signInAnonymously();
     final uid = await authRepo.getCurrentUserId() ?? 'local';

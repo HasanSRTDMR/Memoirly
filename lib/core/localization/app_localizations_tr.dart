@@ -92,7 +92,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get newEntry => 'Yeni kayıt';
 
   @override
-  String get autoSaving => 'Otomatik kaydediliyor…';
+  String get entrySaving => 'Kaydediliyor…';
+
+  @override
+  String get entrySaved => 'Kaydedildi';
+
+  @override
+  String get entryAutoSaveHint => 'Yazdıkça kaydedilir';
+
+  @override
+  String get doneClose => 'Bitti';
 
   @override
   String get save => 'Kaydet';

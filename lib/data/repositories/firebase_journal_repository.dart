@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:memoirly/data/models/journal_entry_model.dart';
 import 'package:memoirly/domain/entities/journal_entry.dart';
@@ -58,11 +60,21 @@ class FirebaseJournalRepository implements JournalRepository {
 
   @override
   Future<JournalEntry?> getById(String id) async {
-    final uid = await userIdResolver();
-    if (uid == null) return null;
-    final doc = await _col(uid).doc(id).get();
-    if (!doc.exists) return null;
-    return JournalEntryModel.fromFirestore(doc, uid).toEntity();
+    try {
+      final uid = await userIdResolver();
+      if (uid == null) return null;
+      final doc = await _col(uid).doc(id).get();
+      if (!doc.exists) return null;
+      return JournalEntryModel.fromFirestore(doc, uid).toEntity();
+    } catch (e, st) {
+      // Offline, missing Firestore DB, rules, etc. — callers treat as "not found".
+      developer.log(
+        'getById failed: $e',
+        name: 'FirebaseJournalRepository',
+        stackTrace: st,
+      );
+      return null;
+    }
   }
 
   @override
@@ -78,7 +90,10 @@ class FirebaseJournalRepository implements JournalRepository {
     final uid = await userIdResolver();
     if (uid == null) throw StateError('No user');
     final model = JournalEntryModel.fromEntity(entry);
-    await _col(uid).doc(model.id).update(model.toFirestore());
+    // `update` throws if the doc is missing (e.g. race, offline). Merge-set is a safe upsert.
+    await _col(uid)
+        .doc(model.id)
+        .set(model.toFirestore(), SetOptions(merge: true));
   }
 
   @override

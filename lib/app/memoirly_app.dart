@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -40,8 +41,25 @@ class MemoirlyApp extends ConsumerWidget {
               darkTheme: buildAppTheme(Brightness.dark),
               themeMode: mode,
               builder: (context, child) {
-                return PinUnlockOverlay(
-                  child: child ?? const SizedBox.shrink(),
+                final theme = Theme.of(context);
+                final brightness = theme.brightness;
+                final lightContent =
+                    brightness == Brightness.dark ? Brightness.light : Brightness.dark;
+                final navScrim = theme.colorScheme.surface;
+                SystemChrome.setSystemUIOverlayStyle(
+                  SystemUiOverlayStyle(
+                    statusBarColor: Colors.transparent,
+                    systemNavigationBarColor: navScrim,
+                    systemNavigationBarContrastEnforced: false,
+                    statusBarIconBrightness: lightContent,
+                    systemNavigationBarIconBrightness: lightContent,
+                  ),
+                );
+                return ColoredBox(
+                  color: navScrim,
+                  child: PinUnlockOverlay(
+                    child: child ?? const SizedBox.shrink(),
+                  ),
                 );
               },
             );

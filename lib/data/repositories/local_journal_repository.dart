@@ -92,7 +92,12 @@ class LocalJournalRepository implements JournalRepository {
   Future<void> update(JournalEntry entry) async {
     final list = _readAll();
     final i = list.indexWhere((e) => e.id == entry.id);
-    if (i >= 0) list[i] = entry;
+    if (i >= 0) {
+      list[i] = entry;
+    } else {
+      list.add(entry);
+      list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    }
     await _writeAll(list);
     _notify();
   }

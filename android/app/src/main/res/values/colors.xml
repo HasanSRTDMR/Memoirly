@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Matches app light scaffold / surface so 3-button nav isn’t a black strip. -->
+    <color name="app_navigation_bar">#FFF9F9F7</color>
+</resources>

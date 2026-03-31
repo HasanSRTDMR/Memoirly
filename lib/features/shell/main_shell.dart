@@ -38,6 +38,7 @@ class MainShell extends StatelessWidget {
             builder: (context, c) {
               final narrow = c.maxWidth < 400;
               final padH = narrow ? 4.0 : 8.0;
+              final contentW = c.maxWidth - 2 * padH;
               final navChildren = items
                   .map(
                     (it) => _NavItem(
@@ -50,7 +51,7 @@ class MainShell extends StatelessWidget {
                   )
                   .toList();
               final bar = Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: navChildren,
               );
               return Padding(
@@ -58,9 +59,13 @@ class MainShell extends StatelessWidget {
                 child: narrow
                     ? SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: navChildren,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(minWidth: contentW),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisSize: MainAxisSize.min,
+                            children: navChildren,
+                          ),
                         ),
                       )
                     : bar,

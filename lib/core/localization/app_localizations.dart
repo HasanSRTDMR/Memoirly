@@ -260,11 +260,29 @@ abstract class AppLocalizations {
   /// **'New Entry'**
   String get newEntry;
 
-  /// No description provided for @autoSaving.
+  /// No description provided for @entrySaving.
   ///
   /// In en, this message translates to:
-  /// **'Auto-saving…'**
-  String get autoSaving;
+  /// **'Saving…'**
+  String get entrySaving;
+
+  /// No description provided for @entrySaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get entrySaved;
+
+  /// No description provided for @entryAutoSaveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Saves as you write'**
+  String get entryAutoSaveHint;
+
+  /// No description provided for @doneClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get doneClose;
 
   /// No description provided for @save.
   ///

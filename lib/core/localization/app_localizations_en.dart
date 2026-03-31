@@ -93,7 +93,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newEntry => 'New Entry';
 
   @override
-  String get autoSaving => 'Auto-saving…';
+  String get entrySaving => 'Saving…';
+
+  @override
+  String get entrySaved => 'Saved';
+
+  @override
+  String get entryAutoSaveHint => 'Saves as you write';
+
+  @override
+  String get doneClose => 'Done';
 
   @override
   String get save => 'Save';
