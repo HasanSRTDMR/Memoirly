@@ -9,6 +9,8 @@ class JournalEntry extends Equatable {
     required this.createdAt,
     this.mood,
     this.tags = const [],
+    this.imagePaths = const [],
+    this.contentColorArgb,
   });
 
   final String id;
@@ -18,6 +20,10 @@ class JournalEntry extends Equatable {
   final DateTime createdAt;
   final String? mood;
   final List<String> tags;
+  /// Local filesystem paths to images attached to this entry.
+  final List<String> imagePaths;
+  /// When set, body text is shown in this color in the reader (ARGB, 32-bit).
+  final int? contentColorArgb;
 
   int get wordCount {
     if (content.trim().isEmpty) return 0;
@@ -25,8 +31,10 @@ class JournalEntry extends Equatable {
   }
 
   String get searchableText {
-    final t = tags.map((e) => e.toLowerCase()).join(' ');
-    return '${title.toLowerCase()} ${content.toLowerCase()} $t';
+    final lowerTags = tags.map((e) => e.toLowerCase()).toList();
+    final t = lowerTags.join(' ');
+    final hashTags = lowerTags.map((e) => '#$e').join(' ');
+    return '${title.toLowerCase()} ${content.toLowerCase()} $t $hashTags';
   }
 
   JournalEntry copyWith({
@@ -37,7 +45,10 @@ class JournalEntry extends Equatable {
     DateTime? createdAt,
     String? mood,
     List<String>? tags,
+    List<String>? imagePaths,
+    int? contentColorArgb,
     bool clearMood = false,
+    bool clearContentColor = false,
   }) {
     return JournalEntry(
       id: id ?? this.id,
@@ -47,10 +58,22 @@ class JournalEntry extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       mood: clearMood ? null : (mood ?? this.mood),
       tags: tags ?? this.tags,
+      imagePaths: imagePaths ?? this.imagePaths,
+      contentColorArgb:
+          clearContentColor ? null : (contentColorArgb ?? this.contentColorArgb),
     );
   }
 
   @override
-  List<Object?> get props =>
-      [id, userId, title, content, createdAt, mood, tags];
+  List<Object?> get props => [
+        id,
+        userId,
+        title,
+        content,
+        createdAt,
+        mood,
+        tags,
+        imagePaths,
+        contentColorArgb,
+      ];
 }

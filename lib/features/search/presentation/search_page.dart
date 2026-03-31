@@ -89,6 +89,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               TextField(
                 controller: _controller,
                 onChanged: _onChanged,
+                cursorColor: Theme.of(context).colorScheme.onSurface,
                 decoration: InputDecoration(
                   hintText: l.searchYourThoughts,
                   prefixIcon: const Icon(Icons.search_rounded),
@@ -98,8 +99,16 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                     borderRadius: BorderRadius.circular(20),
                     borderSide: BorderSide.none,
                   ),
+                  hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurfaceVariant
+                            .withValues(alpha: 0.7),
+                      ),
                 ),
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
               ),
               const SizedBox(height: 16),
               Wrap(

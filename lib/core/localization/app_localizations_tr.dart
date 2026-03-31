@@ -113,7 +113,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get mood => 'Ruh hali';
 
   @override
-  String get addTags => '#etiket ekle…';
+  String get addTags => '#etiket veya virgülle (ör. tatil, yaz)';
+
+  @override
+  String get addImage => 'Görsel ekle';
+
+  @override
+  String get textColor => 'Yazı rengi';
+
+  @override
+  String get textColorDefault => 'Varsayılan';
 
   @override
   String get entryDetail => 'Kayıt';
@@ -388,6 +397,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get errorGeneric => 'Bir şeyler ters gitti';
+
+  @override
+  String get imagePickerError =>
+      'Galeri açılamadı. Uygulamayı tamamen durdurup yeniden çalıştırın (hot restart değil); emülatörde Google Play’li bir sistem görüntüsü deneyin.';
 
   @override
   String get emptyJournal => 'Henüz kayıt yok. Yazmaya başla.';

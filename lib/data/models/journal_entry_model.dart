@@ -10,6 +10,8 @@ class JournalEntryModel {
     required this.createdAt,
     this.mood,
     this.tags = const [],
+    this.imagePaths = const [],
+    this.contentColorArgb,
   });
 
   final String id;
@@ -19,6 +21,8 @@ class JournalEntryModel {
   final DateTime createdAt;
   final String? mood;
   final List<String> tags;
+  final List<String> imagePaths;
+  final int? contentColorArgb;
 
   JournalEntry toEntity() => JournalEntry(
         id: id,
@@ -28,6 +32,8 @@ class JournalEntryModel {
         createdAt: createdAt,
         mood: mood,
         tags: tags,
+        imagePaths: imagePaths,
+        contentColorArgb: contentColorArgb,
       );
 
   factory JournalEntryModel.fromEntity(JournalEntry e) => JournalEntryModel(
@@ -38,6 +44,8 @@ class JournalEntryModel {
         createdAt: e.createdAt,
         mood: e.mood,
         tags: e.tags,
+        imagePaths: e.imagePaths,
+        contentColorArgb: e.contentColorArgb,
       );
 
   factory JournalEntryModel.fromFirestore(
@@ -53,6 +61,9 @@ class JournalEntryModel {
       createdAt: (d['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       mood: d['mood'] as String?,
       tags: (d['tags'] as List?)?.map((e) => e.toString()).toList() ?? [],
+      imagePaths:
+          (d['imagePaths'] as List?)?.map((e) => e.toString()).toList() ?? [],
+      contentColorArgb: (d['contentColorArgb'] as num?)?.toInt(),
     );
   }
 
@@ -62,6 +73,8 @@ class JournalEntryModel {
         'createdAt': Timestamp.fromDate(createdAt),
         'mood': mood,
         'tags': tags,
+        'imagePaths': imagePaths,
+        'contentColorArgb': contentColorArgb,
       };
 
   factory JournalEntryModel.fromJson(Map<String, dynamic> json) {
@@ -73,6 +86,11 @@ class JournalEntryModel {
       createdAt: DateTime.parse(json['createdAt'] as String),
       mood: json['mood'] as String?,
       tags: (json['tags'] as List?)?.map((e) => e.toString()).toList() ?? [],
+      imagePaths: (json['imagePaths'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+      contentColorArgb: (json['contentColorArgb'] as num?)?.toInt(),
     );
   }
 
@@ -84,5 +102,7 @@ class JournalEntryModel {
         'createdAt': createdAt.toIso8601String(),
         'mood': mood,
         'tags': tags,
+        'imagePaths': imagePaths,
+        'contentColorArgb': contentColorArgb,
       };
 }

@@ -114,7 +114,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mood => 'Mood';
 
   @override
-  String get addTags => 'Add #tags…';
+  String get addTags => '#tag or comma-separated (e.g. tatil, yaz)';
+
+  @override
+  String get addImage => 'Add image';
+
+  @override
+  String get textColor => 'Text color';
+
+  @override
+  String get textColorDefault => 'Default';
 
   @override
   String get entryDetail => 'Entry';
@@ -390,6 +399,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorGeneric => 'Something went wrong';
+
+  @override
+  String get imagePickerError =>
+      'Could not open the photo picker. Stop the app completely, run it again (not hot restart), or try a device with Google Play services.';
 
   @override
   String get emptyJournal => 'No entries yet. Start writing.';

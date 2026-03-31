@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:memoirly/core/constants/mood_keys.dart';
 import 'package:memoirly/core/di/providers.dart';
@@ -10,6 +13,8 @@ import 'package:memoirly/core/localization/app_localizations.dart';
 import 'package:memoirly/core/localization/mood_localizations.dart';
 import 'package:memoirly/core/theme/app_colors.dart';
 import 'package:memoirly/domain/entities/journal_entry.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 class WriteEntryPage extends ConsumerStatefulWidget {
@@ -36,6 +41,19 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
   DateTime? _lastSavedAt;
   DateTime? _entryCreatedAt;
   Completer<bool>? _persistCoalescer;
+  final List<String> _imagePaths = [];
+  int? _contentColorArgb;
+
+  static const List<int?> _inkArgbChoices = [
+    null,
+    0xFF2D3432,
+    0xFF5B6150,
+    0xFF6C5C4D,
+    0xFF4A6572,
+    0xFF6D4C41,
+    0xFF2E5E4E,
+    0xFF5D4037,
+  ];
 
   @override
   void initState() {
@@ -52,7 +70,7 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
     if (_listenersAttached) {
       _title.removeListener(_scheduleDebouncedSave);
       _body.removeListener(_scheduleDebouncedSave);
-      _tags.removeListener(_scheduleDebouncedSave);
+      _tags.removeListener(_onTagsChanged);
     }
     _title.dispose();
     _body.dispose();
@@ -65,16 +83,28 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
   bool get _meaningfulContent {
     return _title.text.trim().isNotEmpty ||
         _body.text.trim().isNotEmpty ||
-        _parseTags(_tags.text).isNotEmpty;
+        _parseTags(_tags.text).isNotEmpty ||
+        _imagePaths.isNotEmpty;
   }
 
   List<String> _parseTags(String raw) {
-    final re = RegExp(r'#([\w-]+)');
-    return re
+    final fromHash = RegExp(r'#([^\s#,]+)')
         .allMatches(raw)
-        .map((m) => m.group(1)!.toLowerCase())
-        .toSet()
-        .toList();
+        .map((m) => m.group(1)!.toLowerCase().trim())
+        .where((s) => s.isNotEmpty);
+    final fromCommas = raw
+        .split(RegExp(r'[,\n;]+'))
+        .map((s) => s.trim())
+        .where((s) => s.isNotEmpty)
+        .map((s) => s.startsWith('#') ? s.substring(1) : s)
+        .map((s) => s.toLowerCase().trim())
+        .where((s) => s.isNotEmpty);
+    return {...fromHash, ...fromCommas}.toList();
+  }
+
+  void _onTagsChanged() {
+    _scheduleDebouncedSave();
+    if (mounted) setState(() {});
   }
 
   void _ensureListeners() {
@@ -82,7 +112,105 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
     _listenersAttached = true;
     _title.addListener(_scheduleDebouncedSave);
     _body.addListener(_scheduleDebouncedSave);
-    _tags.addListener(_scheduleDebouncedSave);
+    _tags.addListener(_onTagsChanged);
+  }
+
+  Future<void> _pickImage() async {
+    final l = AppLocalizations.of(context);
+    try {
+      final picker = ImagePicker();
+      final x = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 82,
+        maxWidth: 1600,
+      );
+      if (x == null || !mounted) return;
+
+      final dir = await getApplicationDocumentsDirectory();
+      final sub = Directory(p.join(dir.path, 'journal_images'));
+      if (!await sub.exists()) await sub.create(recursive: true);
+      final name = '${const Uuid().v4()}.jpg';
+      final dest = File(p.join(sub.path, name));
+      await File(x.path).copy(dest.path);
+      if (!mounted) return;
+      setState(() => _imagePaths.add(dest.path));
+      _scheduleDebouncedSave();
+    } on PlatformException catch (e, st) {
+      debugPrint('WriteEntryPage._pickImage PlatformException: $e\n$st');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l.imagePickerError)),
+      );
+    } catch (e, st) {
+      debugPrint('WriteEntryPage._pickImage: $e\n$st');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l.errorGeneric)),
+      );
+    }
+  }
+
+  void _removeImageAt(int index) {
+    if (index < 0 || index >= _imagePaths.length) return;
+    setState(() => _imagePaths.removeAt(index));
+    _scheduleDebouncedSave();
+  }
+
+  Widget _buildImageThumb(int index) {
+    final path = _imagePaths[index];
+    final file = File(path);
+    final exists = file.existsSync();
+    return Padding(
+      padding: const EdgeInsets.only(left: 8),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: SizedBox(
+              width: 72,
+              height: 72,
+              child: exists
+                  ? Image.file(
+                      file,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => ColoredBox(
+                        color: AppColors.surfaceContainerHigh,
+                        child: Icon(
+                          Icons.broken_image_outlined,
+                          color: AppColors.onSurfaceVariant,
+                        ),
+                      ),
+                    )
+                  : ColoredBox(
+                      color: AppColors.surfaceContainerHigh,
+                      child: Icon(
+                        Icons.broken_image_outlined,
+                        color: AppColors.onSurfaceVariant,
+                      ),
+                    ),
+            ),
+          ),
+          Positioned(
+            top: -4,
+            right: -4,
+            child: Material(
+              color: AppColors.surfaceContainerLowest,
+              shape: const CircleBorder(),
+              elevation: 1,
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: () => _removeImageAt(index),
+                child: const Padding(
+                  padding: EdgeInsets.all(4),
+                  child: Icon(Icons.close_rounded, size: 16),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void _scheduleDebouncedSave() {
@@ -166,6 +294,8 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
         createdAt: createdAt,
         mood: mood,
         tags: tags,
+        imagePaths: List<String>.from(_imagePaths),
+        contentColorArgb: _contentColorArgb,
       );
 
       // Repository `update` is upsert-safe (Firestore merge-set, local list upsert).
@@ -248,6 +378,10 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                 _tags.text = e.tags.map((t) => '#$t').join(' ');
                 _moodKey = e.mood ?? _moodKey;
                 _entryCreatedAt = e.createdAt;
+                _imagePaths
+                  ..clear()
+                  ..addAll(e.imagePaths);
+                _contentColorArgb = e.contentColorArgb;
                 _hydrated = true;
               });
             });
@@ -275,11 +409,21 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
     final sub = DateFormat.EEEE(locale).format(now);
 
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
-    final bottomPad = 200.0 + bottomInset;
+    final bottomPad = 320.0 + bottomInset;
     final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final onSurface = cs.onSurface;
     final hintStyle = theme.textTheme.labelSmall?.copyWith(
-      color: AppColors.onSurfaceVariant.withValues(alpha: 0.75),
-    );
+          color: cs.onSurfaceVariant.withValues(alpha: 0.85),
+        ) ??
+        TextStyle(
+          color: cs.onSurfaceVariant.withValues(alpha: 0.85),
+          fontSize: 10,
+        );
+    final bodyInkColor = _contentColorArgb != null
+        ? Color(_contentColorArgb!)
+        : onSurface;
+    final parsedTags = _parseTags(_tags.text);
 
     Widget? status;
     if (_persistInFlight) {
@@ -404,27 +548,119 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    IconButton.filledTonal(
+                      onPressed: _pickImage,
+                      tooltip: l.addImage,
+                      icon: const Icon(Icons.add_photo_alternate_outlined),
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Row(
+                          children: [
+                            for (var i = 0; i < _imagePaths.length; i++)
+                              _buildImageThumb(i),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Text(
+                      l.textColor,
+                      style: theme.textTheme.labelSmall,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: _inkArgbChoices.map((argb) {
+                            final selected = _contentColorArgb == argb;
+                            final circle = Container(
+                              width: 28,
+                              height: 28,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: argb != null
+                                    ? Color(argb)
+                                    : AppColors.surfaceContainerHigh,
+                                border: Border.all(
+                                  color: selected
+                                      ? cs.primary
+                                      : AppColors.outlineVariant
+                                          .withValues(alpha: 0.5),
+                                  width: selected ? 2 : 1,
+                                ),
+                              ),
+                              alignment: Alignment.center,
+                              child: argb == null
+                                  ? Icon(
+                                      Icons.format_color_reset_rounded,
+                                      size: 14,
+                                      color:
+                                          onSurface.withValues(alpha: 0.7),
+                                    )
+                                  : null,
+                            );
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() => _contentColorArgb = argb);
+                                  _scheduleDebouncedSave();
+                                },
+                                customBorder: const CircleBorder(),
+                                child: argb == null
+                                    ? Tooltip(
+                                        message: l.textColorDefault,
+                                        child: circle,
+                                      )
+                                    : circle,
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
                 TextField(
                   controller: _title,
+                  cursorColor: onSurface,
                   decoration: InputDecoration(
                     hintText: l.titleHint,
                     border: InputBorder.none,
+                    filled: false,
+                    hintStyle: hintStyle,
                   ),
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: theme.textTheme.titleMedium?.copyWith(color: onSurface),
                 ),
                 TextField(
                   controller: _body,
                   maxLines: null,
                   minLines: 12,
                   keyboardType: TextInputType.multiline,
-                  decoration: const InputDecoration(
+                  cursorColor: bodyInkColor,
+                  decoration: InputDecoration(
                     border: InputBorder.none,
+                    filled: false,
+                    hintStyle: hintStyle,
                   ),
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontSize: 22,
-                        height: 1.8,
-                      ),
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontSize: 22,
+                    height: 1.8,
+                    color: bodyInkColor,
+                  ),
                 ),
               ],
             ),
@@ -456,7 +692,7 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                               children: [
                                 Text(
                                   l.mood,
-                                  style: Theme.of(context).textTheme.labelSmall,
+                                  style: theme.textTheme.labelSmall,
                                 ),
                                 const SizedBox(width: 8),
                                 Expanded(
@@ -494,7 +730,7 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                                                       .sentiment_very_dissatisfied,
                                                 ][i],
                                                 size: 22,
-                                                color: AppColors.onSurface,
+                                                color: theme.colorScheme.onSurface,
                                               ),
                                             ),
                                           ),
@@ -506,8 +742,40 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                               ],
                             ),
                             const Divider(height: 20),
+                            if (parsedTags.isNotEmpty) ...[
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Wrap(
+                                  spacing: 6,
+                                  runSpacing: 6,
+                                  children: parsedTags
+                                      .map(
+                                        (t) => Chip(
+                                          label: Text(
+                                            '#$t',
+                                            style: theme.textTheme.labelSmall
+                                                ?.copyWith(fontSize: 11),
+                                          ),
+                                          visualDensity: VisualDensity.compact,
+                                          materialTapTargetSize:
+                                              MaterialTapTargetSize.shrinkWrap,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                          ),
+                                          backgroundColor:
+                                              AppColors.secondaryContainer
+                                                  .withValues(alpha: 0.65),
+                                          side: BorderSide.none,
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                            ],
                             TextField(
                               controller: _tags,
+                              cursorColor: onSurface,
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(
                                   Icons.sell_outlined,
@@ -516,8 +784,14 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                                 ),
                                 hintText: l.addTags,
                                 border: InputBorder.none,
+                                filled: false,
                                 isDense: true,
+                                hintStyle:
+                                    hintStyle.copyWith(fontSize: 12),
+                                hintMaxLines: 2,
                               ),
+                              style: theme.textTheme.bodyMedium
+                                  ?.copyWith(color: onSurface, fontSize: 14),
                             ),
                             const SizedBox(height: 8),
                             Wrap(

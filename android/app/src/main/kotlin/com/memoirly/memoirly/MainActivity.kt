@@ -3,9 +3,9 @@ package com.memoirly.memoirly
 import android.os.Build
 import android.os.Bundle
 import androidx.core.view.WindowCompat
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 
-class MainActivity : FlutterActivity() {
+class MainActivity : FlutterFragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // Draw Flutter behind the status/navigation bars; insets stay via SafeArea / padding.
         WindowCompat.setDecorFitsSystemWindows(window, false)

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -48,6 +50,9 @@ class EntryDetailPage extends ConsumerWidget {
         final time = DateFormat.jm(locale).format(entry.createdAt);
         final weekday = DateFormat.EEEE(locale).format(entry.createdAt);
         final mood = entry.mood;
+        final imagePathsExisting = entry.imagePaths
+            .where((path) => File(path).existsSync())
+            .toList();
 
         return Scaffold(
           appBar: AppBar(
@@ -165,9 +170,37 @@ class EntryDetailPage extends ConsumerWidget {
                     ),
               ),
               const SizedBox(height: 16),
+              if (imagePathsExisting.isNotEmpty) ...[
+                SizedBox(
+                  height: 120,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: imagePathsExisting.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 10),
+                    itemBuilder: (context, i) {
+                      final file = File(imagePathsExisting[i]);
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: Image.file(
+                            file,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
               Text(
                 entry.content,
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: entry.contentColorArgb != null
+                          ? Color(entry.contentColorArgb!)
+                          : null,
+                    ),
               ),
               if (entry.tags.isNotEmpty) ...[
                 const SizedBox(height: 28),

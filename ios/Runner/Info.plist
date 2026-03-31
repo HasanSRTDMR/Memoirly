@@ -47,5 +47,7 @@
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Unlock your journal with Face ID.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Choose photos to attach to your journal entries.</string>
 </dict>
 </plist>

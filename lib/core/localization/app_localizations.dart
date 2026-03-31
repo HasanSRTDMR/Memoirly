@@ -305,8 +305,26 @@ abstract class AppLocalizations {
   /// No description provided for @addTags.
   ///
   /// In en, this message translates to:
-  /// **'Add #tags…'**
+  /// **'#tag or comma-separated (e.g. tatil, yaz)'**
   String get addTags;
+
+  /// No description provided for @addImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add image'**
+  String get addImage;
+
+  /// No description provided for @textColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Text color'**
+  String get textColor;
+
+  /// No description provided for @textColorDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get textColorDefault;
 
   /// No description provided for @entryDetail.
   ///
@@ -817,6 +835,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong'**
   String get errorGeneric;
+
+  /// No description provided for @imagePickerError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the photo picker. Stop the app completely, run it again (not hot restart), or try a device with Google Play services.'**
+  String get imagePickerError;
 
   /// No description provided for @emptyJournal.
   ///
