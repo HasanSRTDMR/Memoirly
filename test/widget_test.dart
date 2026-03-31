@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:memoirly/app/app_router.dart';
 import 'package:memoirly/app/memoirly_app.dart';
+import 'package:memoirly/core/config/app_backend.dart';
 import 'package:memoirly/core/di/providers.dart';
 import 'package:memoirly/data/repositories/local_auth_repository.dart';
 import 'package:memoirly/data/repositories/local_journal_repository.dart';
@@ -61,6 +62,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          appBackendProvider.overrideWithValue(AppBackend.local),
           authRepositoryProvider.overrideWithValue(auth),
           journalRepositoryProvider.overrideWithValue(journal),
           settingsRepositoryProvider.overrideWithValue(settings),

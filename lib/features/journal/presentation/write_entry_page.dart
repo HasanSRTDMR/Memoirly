@@ -165,7 +165,11 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
     final header = DateFormat.yMMMMd(locale).format(now);
     final sub = DateFormat.EEEE(locale).format(now);
 
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    final bottomPad = 200.0 + bottomInset;
+
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
@@ -195,7 +199,7 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
       body: Stack(
         children: [
           ListView(
-            padding: const EdgeInsets.fromLTRB(24, 16, 24, 200),
+            padding: EdgeInsets.fromLTRB(24, 16, 24, bottomPad),
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -260,7 +264,7 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
               child: SafeArea(
                 top: false,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+                  padding: EdgeInsets.fromLTRB(16, 12, 16, 12 + bottomInset),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       color: AppColors.surfaceContainerLow,

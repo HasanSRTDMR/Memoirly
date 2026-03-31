@@ -18,6 +18,14 @@ class MainShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final items = <({IconData icon, String label, int index})>[
+      (icon: Icons.home_rounded, label: l.home, index: 0),
+      (icon: Icons.search_rounded, label: l.search, index: 1),
+      (icon: Icons.calendar_today_rounded, label: l.calendar, index: 2),
+      (icon: Icons.analytics_outlined, label: l.insights, index: 3),
+      (icon: Icons.settings_outlined, label: l.settings, index: 4),
+    ];
+
     return Scaffold(
       extendBody: true,
       body: navigationShell,
@@ -26,43 +34,38 @@ class MainShell extends StatelessWidget {
         elevation: 0,
         child: SafeArea(
           top: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(8, 8, 8, 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _NavItem(
-                  icon: Icons.home_rounded,
-                  label: l.home,
-                  selected: navigationShell.currentIndex == 0,
-                  onTap: () => _goBranch(0),
-                ),
-                _NavItem(
-                  icon: Icons.search_rounded,
-                  label: l.search,
-                  selected: navigationShell.currentIndex == 1,
-                  onTap: () => _goBranch(1),
-                ),
-                _NavItem(
-                  icon: Icons.calendar_today_rounded,
-                  label: l.calendar,
-                  selected: navigationShell.currentIndex == 2,
-                  onTap: () => _goBranch(2),
-                ),
-                _NavItem(
-                  icon: Icons.analytics_outlined,
-                  label: l.insights,
-                  selected: navigationShell.currentIndex == 3,
-                  onTap: () => _goBranch(3),
-                ),
-                _NavItem(
-                  icon: Icons.settings_outlined,
-                  label: l.settings,
-                  selected: navigationShell.currentIndex == 4,
-                  onTap: () => _goBranch(4),
-                ),
-              ],
-            ),
+          child: LayoutBuilder(
+            builder: (context, c) {
+              final narrow = c.maxWidth < 400;
+              final padH = narrow ? 4.0 : 8.0;
+              final navChildren = items
+                  .map(
+                    (it) => _NavItem(
+                      icon: it.icon,
+                      label: it.label,
+                      selected: navigationShell.currentIndex == it.index,
+                      compact: narrow,
+                      onTap: () => _goBranch(it.index),
+                    ),
+                  )
+                  .toList();
+              final bar = Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: navChildren,
+              );
+              return Padding(
+                padding: EdgeInsets.fromLTRB(padH, 8, padH, 12),
+                child: narrow
+                    ? SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: navChildren,
+                        ),
+                      )
+                    : bar,
+              );
+            },
           ),
         ),
       ),
@@ -75,12 +78,14 @@ class _NavItem extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.selected,
+    required this.compact,
     required this.onTap,
   });
 
   final IconData icon;
   final String label;
   final bool selected;
+  final bool compact;
   final VoidCallback onTap;
 
   @override
@@ -92,22 +97,27 @@ class _NavItem extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(999),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        padding: EdgeInsets.symmetric(
+          horizontal: compact ? 8 : 10,
+          vertical: compact ? 6 : 8,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               icon,
-              size: 22,
+              size: compact ? 20 : 22,
               color: fg,
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: compact ? 2 : 4),
             Text(
               label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    fontSize: 9,
+                    fontSize: compact ? 8 : 9,
                     color: fg,
-                    letterSpacing: 1.4,
+                    letterSpacing: compact ? 0.8 : 1.4,
                   ),
             ),
           ],

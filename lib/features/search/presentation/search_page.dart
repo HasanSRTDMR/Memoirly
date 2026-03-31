@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:memoirly/core/constants/mood_keys.dart';
 import 'package:memoirly/core/di/providers.dart';
+import 'package:memoirly/core/error/journal_stream_error.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
 import 'package:memoirly/core/localization/mood_localizations.dart';
 import 'package:memoirly/core/theme/app_colors.dart';
@@ -49,7 +50,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
     return Scaffold(
       appBar: ArchiveAppBar(
-        onMenu: () {},
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 8, top: 8, bottom: 8),
@@ -68,7 +68,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       ),
       body: entriesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator.adaptive()),
-        error: (_, __) => Center(child: Text(l.errorGeneric)),
+        error: (e, _) => JournalStreamErrorView(
+              message: describeJournalStreamError(e, l),
+            ),
         data: (entries) {
           final filtered = useCase.search(
             entries,
@@ -78,8 +80,11 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           );
           final recent = entries.take(4).toList();
 
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(24, 8, 24, 120),
+          return LayoutBuilder(
+            builder: (context, c) {
+              final pad = c.maxWidth < 360 ? 16.0 : 24.0;
+              return ListView(
+                padding: EdgeInsets.fromLTRB(pad, 8, pad, 120),
             children: [
               TextField(
                 controller: _controller,
@@ -268,7 +273,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   );
                 }).toList(),
               ),
-            ],
+                ],
+              );
+            },
           );
         },
       ),

@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:memoirly/core/constants/mood_keys.dart';
 import 'package:memoirly/core/di/providers.dart';
+import 'package:memoirly/core/error/journal_stream_error.dart'
+    show JournalStreamErrorView, describeJournalStreamError;
 import 'package:memoirly/core/localization/app_localizations.dart';
 import 'package:memoirly/core/localization/mood_localizations.dart';
 import 'package:memoirly/core/theme/app_colors.dart';
@@ -30,80 +32,87 @@ class HomePage extends ConsumerWidget {
     final entriesAsync = ref.watch(journalEntriesStreamProvider);
 
     return Scaffold(
-      appBar: ArchiveAppBar(
-        onMenu: () {},
-      ),
+      appBar: const ArchiveAppBar(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: WritingFab(
+        heroTag: 'memoirly_fab_home',
         onPressed: () => context.push('/write'),
       ),
       body: entriesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator.adaptive()),
-        error: (e, _) => Center(child: Text(l.errorGeneric)),
+        error: (e, _) => JournalStreamErrorView(
+              message: describeJournalStreamError(e, l),
+            ),
         data: (entries) {
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(24, 8, 24, 120),
-            children: [
-              Text(
-                dateStr.toUpperCase(),
-                style: Theme.of(context).textTheme.labelSmall,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                _greeting(l, now),
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: 28),
-              _StartWritingCard(
-                onStart: () => context.push('/write'),
-                l: l,
-              ),
-              const SizedBox(height: 28),
-              Text(
-                l.reflectToday,
-                style: Theme.of(context).textTheme.labelSmall,
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                height: 44,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: kMoodKeys.take(6).length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 10),
-                  itemBuilder: (context, i) {
-                    final key = kMoodKeys[i];
-                    return _MoodChip(
-                      label: moodLabel(l, key),
-                      filled: i == 0 || i == 1 || i == 4,
-                      onTap: () => context.push('/write?mood=$key'),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 32),
-              Text(
-                l.recentArchive,
-                style: Theme.of(context).textTheme.labelSmall,
-              ),
-              const SizedBox(height: 16),
-              if (entries.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 24),
-                  child: Text(
-                    l.emptyJournal,
-                    style: Theme.of(context).textTheme.bodyMedium,
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              final hPad = constraints.maxWidth < 360 ? 16.0 : 24.0;
+              return ListView(
+                padding: EdgeInsets.fromLTRB(hPad, 8, hPad, 120),
+                children: [
+                  Text(
+                    dateStr.toUpperCase(),
+                    style: Theme.of(context).textTheme.labelSmall,
                   ),
-                )
-              else
-                ...entries.take(12).map(
-                      (e) => _RecentEntryTile(
-                        entry: e,
-                        l: l,
-                        locale: locale,
-                        onTap: () => context.push('/entry/${e.id}'),
-                      ),
+                  const SizedBox(height: 4),
+                  Text(
+                    _greeting(l, now),
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  const SizedBox(height: 28),
+                  _StartWritingCard(
+                    onStart: () => context.push('/write'),
+                    l: l,
+                  ),
+                  const SizedBox(height: 28),
+                  Text(
+                    l.reflectToday,
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 44,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: kMoodKeys.take(6).length,
+                      separatorBuilder: (_, __) =>
+                          const SizedBox(width: 10),
+                      itemBuilder: (context, i) {
+                        final key = kMoodKeys[i];
+                        return _MoodChip(
+                          label: moodLabel(l, key),
+                          filled: i == 0 || i == 1 || i == 4,
+                          onTap: () => context.push('/write?mood=$key'),
+                        );
+                      },
                     ),
-            ],
+                  ),
+                  const SizedBox(height: 32),
+                  Text(
+                    l.recentArchive,
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                  const SizedBox(height: 16),
+                  if (entries.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 24),
+                      child: Text(
+                        l.emptyJournal,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    )
+                  else
+                    ...entries.take(12).map(
+                          (e) => _RecentEntryTile(
+                            entry: e,
+                            l: l,
+                            locale: locale,
+                            onTap: () => context.push('/entry/${e.id}'),
+                          ),
+                        ),
+                ],
+              );
+            },
           );
         },
       ),

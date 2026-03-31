@@ -385,4 +385,40 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get titleHint => 'Başlık (isteğe bağlı)';
+
+  @override
+  String get firestoreApiDisabled =>
+      'Bu Google Cloud projesinde Cloud Firestore API etkin değil. Google Cloud Console’da \"Cloud Firestore API\"yi açın, bir dakika bekleyip tekrar deneyin.';
+
+  @override
+  String get firestoreRulesHint =>
+      'API açıksa Firestore güvenlik kurallarını ve Firebase’de Anonim girişin açık olduğunu kontrol edin.';
+
+  @override
+  String get quickNavTitle => 'Git';
+
+  @override
+  String get accountSheetTitle => 'Oturumunuz';
+
+  @override
+  String get anonymousSessionCloud =>
+      'Anonim oturum. Kayıtlar bu kullanıcı için Firebase ile senkronize edilir.';
+
+  @override
+  String get anonymousSessionLocal =>
+      'Yerel mod: veriler yalnızca bu cihazda kalır.';
+
+  @override
+  String get userIdLabel => 'Kullanıcı kimliği';
+
+  @override
+  String get forgotPinMessage =>
+      'PIN uygulama içinden kurtarılamaz. Erişimi sıfırlamak için Android ayarlarından uygulama verilerini temizleyebilirsiniz (yerel günlük silinir).';
+
+  @override
+  String get emergencyMessage =>
+      'Bu uygulama özel bir günlüktür. Gerçek acil durumlarda cihazınızın acil yardım özelliklerini kullanın.';
+
+  @override
+  String get close => 'Kapat';
 }

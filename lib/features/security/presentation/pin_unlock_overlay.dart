@@ -20,6 +20,27 @@ class _PinUnlockOverlayState extends ConsumerState<PinUnlockOverlay>
   String? _error;
   final _auth = LocalAuthentication();
 
+  Future<void> _showInfoDialog(
+    BuildContext context,
+    String title,
+    String body,
+  ) async {
+    final l = AppLocalizations.of(context);
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(title),
+        content: SingleChildScrollView(child: Text(body)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l.ok),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -179,13 +200,21 @@ class _PinUnlockOverlayState extends ConsumerState<PinUnlockOverlay>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               TextButton(
-                                onPressed: () {},
+                                onPressed: () => _showInfoDialog(
+                                  context,
+                                  AppLocalizations.of(context).forgotPin,
+                                  AppLocalizations.of(context).forgotPinMessage,
+                                ),
                                 child: Text(
                                   AppLocalizations.of(context).forgotPin,
                                 ),
                               ),
                               TextButton(
-                                onPressed: () {},
+                                onPressed: () => _showInfoDialog(
+                                  context,
+                                  AppLocalizations.of(context).emergency,
+                                  AppLocalizations.of(context).emergencyMessage,
+                                ),
                                 child: Text(
                                   AppLocalizations.of(context).emergency,
                                 ),

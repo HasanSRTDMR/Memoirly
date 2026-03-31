@@ -118,5 +118,15 @@
   "loading": "Yükleniyor…",
   "errorGeneric": "Bir şeyler ters gitti",
   "emptyJournal": "Henüz kayıt yok. Yazmaya başla.",
-  "titleHint": "Başlık (isteğe bağlı)"
+  "titleHint": "Başlık (isteğe bağlı)",
+  "firestoreApiDisabled": "Bu Google Cloud projesinde Cloud Firestore API etkin değil. Google Cloud Console’da \"Cloud Firestore API\"yi açın, bir dakika bekleyip tekrar deneyin.",
+  "firestoreRulesHint": "API açıksa Firestore güvenlik kurallarını ve Firebase’de Anonim girişin açık olduğunu kontrol edin.",
+  "quickNavTitle": "Git",
+  "accountSheetTitle": "Oturumunuz",
+  "anonymousSessionCloud": "Anonim oturum. Kayıtlar bu kullanıcı için Firebase ile senkronize edilir.",
+  "anonymousSessionLocal": "Yerel mod: veriler yalnızca bu cihazda kalır.",
+  "userIdLabel": "Kullanıcı kimliği",
+  "forgotPinMessage": "PIN uygulama içinden kurtarılamaz. Erişimi sıfırlamak için Android ayarlarından uygulama verilerini temizleyebilirsiniz (yerel günlük silinir).",
+  "emergencyMessage": "Bu uygulama özel bir günlüktür. Gerçek acil durumlarda cihazınızın acil yardım özelliklerini kullanın.",
+  "close": "Kapat"
 }

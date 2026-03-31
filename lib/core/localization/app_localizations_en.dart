@@ -387,4 +387,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get titleHint => 'Title (optional)';
+
+  @override
+  String get firestoreApiDisabled =>
+      'Cloud Firestore API is not enabled for this Google Cloud project. Open Google Cloud Console, enable \"Cloud Firestore API\", wait a minute, then retry.';
+
+  @override
+  String get firestoreRulesHint =>
+      'If the API is already enabled, check Firestore security rules and that Anonymous sign-in is allowed in Firebase Authentication.';
+
+  @override
+  String get quickNavTitle => 'Navigate';
+
+  @override
+  String get accountSheetTitle => 'Your session';
+
+  @override
+  String get anonymousSessionCloud =>
+      'Signed in anonymously. Entries sync to Firebase for this user.';
+
+  @override
+  String get anonymousSessionLocal =>
+      'Local mode: entries stay on this device only.';
+
+  @override
+  String get userIdLabel => 'User ID';
+
+  @override
+  String get forgotPinMessage =>
+      'PINs cannot be recovered from the app. To reset access you can clear app storage in Android settings (local journal data will be removed).';
+
+  @override
+  String get emergencyMessage =>
+      'This app is a private journal. For real emergencies use your device’s emergency or medical features.';
+
+  @override
+  String get close => 'Close';
 }

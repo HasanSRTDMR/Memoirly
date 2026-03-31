@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:memoirly/core/di/providers.dart';
+import 'package:memoirly/core/error/journal_stream_error.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
 import 'package:memoirly/core/theme/app_colors.dart';
 import 'package:memoirly/core/widgets/archive_app_bar.dart';
@@ -51,96 +52,117 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
     final firstWeekday = MaterialLocalizations.of(context).firstDayOfWeekIndex;
 
     return Scaffold(
-      appBar: ArchiveAppBar(onMenu: () {}),
+      appBar: const ArchiveAppBar(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: WritingFab(onPressed: () => context.push('/write')),
+      floatingActionButton: WritingFab(
+        heroTag: 'memoirly_fab_calendar',
+        onPressed: () => context.push('/write'),
+      ),
       body: entriesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator.adaptive()),
-        error: (e, _) => Center(child: Text(l.errorGeneric)),
+        error: (e, _) => JournalStreamErrorView(
+              message: describeJournalStreamError(e, l),
+            ),
         data: (entries) {
           final markers = _daysWithEntries(entries);
           final sel = _selectedDay ?? DateTime.now();
           final dayEntries = _entriesForDay(entries, sel);
 
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(24, 8, 24, 120),
-            children: [
-              Text(
-                l.timelineView,
-                style: Theme.of(context).textTheme.labelSmall,
-              ),
-              Row(
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              final pad = constraints.maxWidth < 360 ? 16.0 : 24.0;
+              return ListView(
+                padding: EdgeInsets.fromLTRB(pad, 8, pad, 120),
                 children: [
-                  Expanded(
-                    child: Text(
-                      DateFormat.yMMMM(locale).format(_focusedMonth),
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => setState(() {
-                      _focusedMonth =
-                          DateTime(_focusedMonth.year, _focusedMonth.month - 1);
-                    }),
-                    icon: const Icon(Icons.chevron_left_rounded),
-                  ),
-                  IconButton(
-                    onPressed: () => setState(() {
-                      _focusedMonth =
-                          DateTime(_focusedMonth.year, _focusedMonth.month + 1);
-                    }),
-                    icon: const Icon(Icons.chevron_right_rounded),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceContainerLow,
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: _MonthGrid(
-                    month: _focusedMonth,
-                    firstWeekday: firstWeekday,
-                    selectedDay: sel,
-                    markers: markers,
-                    onSelect: (d) => setState(() => _selectedDay = d),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 28),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      DateFormat.yMMMMEEEEd(locale).format(sel),
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontFamily: 'Newsreader',
-                            fontStyle: FontStyle.italic,
-                            fontSize: 22,
-                          ),
-                    ),
-                  ),
                   Text(
-                    l.entriesCount(dayEntries.length),
+                    l.timelineView,
                     style: Theme.of(context).textTheme.labelSmall,
                   ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              if (dayEntries.isEmpty)
-                Text(l.noSearchResults, style: Theme.of(context).textTheme.bodyMedium)
-              else
-                ...dayEntries.map(
-                  (e) => _DayEntryTile(
-                    entry: e,
-                    locale: locale,
-                    onTap: () => context.push('/entry/${e.id}'),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          DateFormat.yMMMM(locale).format(_focusedMonth),
+                          style:
+                              Theme.of(context).textTheme.headlineMedium,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => setState(() {
+                          _focusedMonth = DateTime(
+                            _focusedMonth.year,
+                            _focusedMonth.month - 1,
+                          );
+                        }),
+                        icon: const Icon(Icons.chevron_left_rounded),
+                      ),
+                      IconButton(
+                        onPressed: () => setState(() {
+                          _focusedMonth = DateTime(
+                            _focusedMonth.year,
+                            _focusedMonth.month + 1,
+                          );
+                        }),
+                        icon: const Icon(Icons.chevron_right_rounded),
+                      ),
+                    ],
                   ),
-                ),
-            ],
+                  const SizedBox(height: 16),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceContainerLow,
+                      borderRadius: BorderRadius.circular(32),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: _MonthGrid(
+                        month: _focusedMonth,
+                        firstWeekday: firstWeekday,
+                        selectedDay: sel,
+                        markers: markers,
+                        onSelect: (d) => setState(() => _selectedDay = d),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          DateFormat.yMMMMEEEEd(locale).format(sel),
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(
+                                fontFamily: 'Newsreader',
+                                fontStyle: FontStyle.italic,
+                                fontSize: 22,
+                              ),
+                        ),
+                      ),
+                      Text(
+                        l.entriesCount(dayEntries.length),
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  if (dayEntries.isEmpty)
+                    Text(
+                      l.noSearchResults,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    )
+                  else
+                    ...dayEntries.map(
+                      (e) => _DayEntryTile(
+                        entry: e,
+                        locale: locale,
+                        onTap: () => context.push('/entry/${e.id}'),
+                      ),
+                    ),
+                ],
+              );
+            },
           );
         },
       ),
@@ -207,9 +229,10 @@ class _MonthGrid extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 7,
-            mainAxisSpacing: 10,
+            mainAxisSpacing: 8,
             crossAxisSpacing: 4,
-            childAspectRatio: 1.1,
+            // Taller cells avoid RenderFlex overflow with day number + dot
+            childAspectRatio: 0.82,
           ),
           itemCount: cells.length,
           itemBuilder: (context, i) {
@@ -223,36 +246,45 @@ class _MonthGrid extends StatelessWidget {
             return InkWell(
               onTap: () => onSelect(date),
               borderRadius: BorderRadius.circular(999),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 32,
-                    height: 32,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: isSel ? AppColors.primary : Colors.transparent,
-                    ),
-                    child: Text(
-                      '$dayNum',
-                      style: TextStyle(
-                        fontWeight: isSel ? FontWeight.bold : FontWeight.w500,
-                        color: isSel ? AppColors.onPrimary : AppColors.onSurface,
-                      ),
-                    ),
-                  ),
-                  if (has)
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
                     Container(
-                      margin: const EdgeInsets.only(top: 4),
-                      width: 4,
-                      height: 4,
-                      decoration: const BoxDecoration(
+                      width: 32,
+                      height: 32,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.secondary,
+                        color: isSel ? AppColors.primary : Colors.transparent,
+                      ),
+                      child: Text(
+                        '$dayNum',
+                        style: TextStyle(
+                          fontWeight:
+                              isSel ? FontWeight.bold : FontWeight.w500,
+                          fontSize: 13,
+                          color: isSel
+                              ? AppColors.onPrimary
+                              : AppColors.onSurface,
+                        ),
                       ),
                     ),
-                ],
+                    if (has)
+                      Container(
+                        margin: const EdgeInsets.only(top: 2),
+                        width: 4,
+                        height: 4,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.secondary,
+                        ),
+                      )
+                    else
+                      const SizedBox(height: 6),
+                  ],
+                ),
               ),
             );
           },

@@ -17,7 +17,7 @@ class SettingsPage extends ConsumerWidget {
     final security = ref.watch(securityRepositoryProvider);
 
     return Scaffold(
-      appBar: ArchiveAppBar(onMenu: () {}),
+      appBar: const ArchiveAppBar(),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(24, 8, 24, 120),
         children: [

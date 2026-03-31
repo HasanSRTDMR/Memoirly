@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:memoirly/core/di/providers.dart';
+import 'package:memoirly/core/error/journal_stream_error.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
 import 'package:memoirly/core/localization/mood_localizations.dart';
 import 'package:memoirly/core/theme/app_colors.dart';
@@ -17,10 +18,12 @@ class InsightsPage extends ConsumerWidget {
     final useCase = ref.watch(computeInsightsUseCaseProvider);
 
     return Scaffold(
-      appBar: ArchiveAppBar(onMenu: () {}),
+      appBar: const ArchiveAppBar(),
       body: entriesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator.adaptive()),
-        error: (_, __) => Center(child: Text(l.errorGeneric)),
+        error: (e, _) => JournalStreamErrorView(
+              message: describeJournalStreamError(e, l),
+            ),
         data: (entries) {
           final weekly = useCase.fromEntries(entries);
           final moods = useCase.moodDistributionAll(entries);
@@ -30,8 +33,11 @@ class InsightsPage extends ConsumerWidget {
             (a, b) => b > a ? b : a,
           );
 
-          return ListView(
-            padding: const EdgeInsets.fromLTRB(24, 8, 24, 120),
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              final pad = constraints.maxWidth < 360 ? 16.0 : 24.0;
+              return ListView(
+                padding: EdgeInsets.fromLTRB(pad, 8, pad, 120),
             children: [
               Text(
                 l.weeklyOverview,
@@ -128,27 +134,47 @@ class InsightsPage extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: _StatCard(
+              if (constraints.maxWidth < 520)
+                Column(
+                  children: [
+                    _StatCard(
                       title: l.volume,
                       subtitle: l.avgWordsPerDay,
                       value: '${weekly.avgWordsPerDay}',
                       suffix: l.words,
                       miniBars: true,
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _StatCard(
+                    const SizedBox(height: 12),
+                    _StatCard(
                       title: l.themes,
                       subtitle: l.frequentlyTagged,
                       chips: topTags,
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                )
+              else
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: _StatCard(
+                        title: l.volume,
+                        subtitle: l.avgWordsPerDay,
+                        value: '${weekly.avgWordsPerDay}',
+                        suffix: l.words,
+                        miniBars: true,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _StatCard(
+                        title: l.themes,
+                        subtitle: l.frequentlyTagged,
+                        chips: topTags,
+                      ),
+                    ),
+                  ],
+                ),
               const SizedBox(height: 20),
               Text(
                 l.totalEntries,
@@ -213,6 +239,8 @@ class InsightsPage extends ConsumerWidget {
                 ),
               ),
             ],
+              );
+            },
           );
         },
       ),

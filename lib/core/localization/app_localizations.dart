@@ -811,6 +811,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Title (optional)'**
   String get titleHint;
+
+  /// No description provided for @firestoreApiDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud Firestore API is not enabled for this Google Cloud project. Open Google Cloud Console, enable \"Cloud Firestore API\", wait a minute, then retry.'**
+  String get firestoreApiDisabled;
+
+  /// No description provided for @firestoreRulesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If the API is already enabled, check Firestore security rules and that Anonymous sign-in is allowed in Firebase Authentication.'**
+  String get firestoreRulesHint;
+
+  /// No description provided for @quickNavTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Navigate'**
+  String get quickNavTitle;
+
+  /// No description provided for @accountSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your session'**
+  String get accountSheetTitle;
+
+  /// No description provided for @anonymousSessionCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in anonymously. Entries sync to Firebase for this user.'**
+  String get anonymousSessionCloud;
+
+  /// No description provided for @anonymousSessionLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Local mode: entries stay on this device only.'**
+  String get anonymousSessionLocal;
+
+  /// No description provided for @userIdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'User ID'**
+  String get userIdLabel;
+
+  /// No description provided for @forgotPinMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'PINs cannot be recovered from the app. To reset access you can clear app storage in Android settings (local journal data will be removed).'**
+  String get forgotPinMessage;
+
+  /// No description provided for @emergencyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This app is a private journal. For real emergencies use your device’s emergency or medical features.'**
+  String get emergencyMessage;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
 }
 
 class _AppLocalizationsDelegate

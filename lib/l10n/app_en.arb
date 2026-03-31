@@ -138,5 +138,15 @@
   "loading": "Loading…",
   "errorGeneric": "Something went wrong",
   "emptyJournal": "No entries yet. Start writing.",
-  "titleHint": "Title (optional)"
+  "titleHint": "Title (optional)",
+  "firestoreApiDisabled": "Cloud Firestore API is not enabled for this Google Cloud project. Open Google Cloud Console, enable \"Cloud Firestore API\", wait a minute, then retry.",
+  "firestoreRulesHint": "If the API is already enabled, check Firestore security rules and that Anonymous sign-in is allowed in Firebase Authentication.",
+  "quickNavTitle": "Navigate",
+  "accountSheetTitle": "Your session",
+  "anonymousSessionCloud": "Signed in anonymously. Entries sync to Firebase for this user.",
+  "anonymousSessionLocal": "Local mode: entries stay on this device only.",
+  "userIdLabel": "User ID",
+  "forgotPinMessage": "PINs cannot be recovered from the app. To reset access you can clear app storage in Android settings (local journal data will be removed).",
+  "emergencyMessage": "This app is a private journal. For real emergencies use your device’s emergency or medical features.",
+  "close": "Close"
 }
