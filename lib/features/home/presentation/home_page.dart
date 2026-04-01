@@ -77,11 +77,10 @@ class HomePage extends ConsumerWidget {
                       itemCount: kMoodKeys.take(6).length,
                       separatorBuilder: (_, __) =>
                           const SizedBox(width: 10),
-                      itemBuilder: (context, i) {
-                        final key = kMoodKeys[i];
+                      itemBuilder: (context, index) {
+                        final key = kMoodKeys[index];
                         return _MoodChip(
                           label: moodLabel(l, key),
-                          filled: i == 0 || i == 1 || i == 4,
                           onTap: () => context.push('/write?mood=$key'),
                         );
                       },
@@ -209,24 +208,16 @@ class _StartWritingCard extends StatelessWidget {
 class _MoodChip extends StatelessWidget {
   const _MoodChip({
     required this.label,
-    required this.filled,
     required this.onTap,
   });
 
   final String label;
-  final bool filled;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final bg = filled
-        ? AppColors.secondaryContainer
-        : AppColors.surfaceContainerHigh;
-    final fg = filled
-        ? AppColors.onSecondaryContainer
-        : AppColors.onSurfaceVariant;
     return Material(
-      color: bg,
+      color: AppColors.surfaceContainerHigh,
       borderRadius: BorderRadius.circular(999),
       child: InkWell(
         onTap: onTap,
@@ -238,7 +229,7 @@ class _MoodChip extends StatelessWidget {
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: fg,
+                  color: AppColors.onSurfaceVariant,
                 ),
           ),
         ),
