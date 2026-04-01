@@ -449,7 +449,7 @@ abstract class AppLocalizations {
   /// No description provided for @last7Days.
   ///
   /// In en, this message translates to:
-  /// **'Last 7 days'**
+  /// **'This week'**
   String get last7Days;
 
   /// No description provided for @volume.

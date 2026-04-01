@@ -3,6 +3,7 @@ import 'package:memoirly/domain/entities/journal_entry.dart';
 
 class WeeklyInsight {
   const WeeklyInsight({
+    required this.weekStart,
     required this.daysWritten,
     required this.totalWords,
     required this.avgWordsPerDay,
@@ -11,6 +12,8 @@ class WeeklyInsight {
     required this.entriesPerWeekday,
   });
 
+  /// Monday 00:00 local date for the insight week (same range as [entriesPerWeekday]).
+  final DateTime weekStart;
   final int daysWritten;
   final int totalWords;
   final int avgWordsPerDay;
@@ -39,9 +42,9 @@ class ComputeInsightsUseCase {
         .length;
 
     final totalWords = weekEntries.fold<int>(0, (a, b) => a + b.wordCount);
-    final avg = weekEntries.isEmpty
+    final avg = daysWithEntries == 0
         ? 0
-        : (totalWords / 7).round();
+        : (totalWords / daysWithEntries).round();
 
     final moodCounts = <String, int>{};
     for (final e in weekEntries) {
@@ -66,6 +69,7 @@ class ComputeInsightsUseCase {
     }
 
     return WeeklyInsight(
+      weekStart: weekStart,
       daysWritten: daysWithEntries,
       totalWords: totalWords,
       avgWordsPerDay: avg,

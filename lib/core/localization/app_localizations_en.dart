@@ -199,7 +199,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get moodRhythm => 'Mood rhythm';
 
   @override
-  String get last7Days => 'Last 7 days';
+  String get last7Days => 'This week';
 
   @override
   String get volume => 'Volume';

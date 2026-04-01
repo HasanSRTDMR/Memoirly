@@ -26,8 +26,13 @@ class JournalEntry extends Equatable {
   final int? contentColorArgb;
 
   int get wordCount {
-    if (content.trim().isEmpty) return 0;
-    return content.trim().split(RegExp(r'\s+')).length;
+    final t = title.trim();
+    final c = content.trim();
+    final parts = <String>[];
+    if (t.isNotEmpty) parts.add(t);
+    if (c.isNotEmpty) parts.add(c);
+    if (parts.isEmpty) return 0;
+    return parts.join(' ').split(RegExp(r'\s+')).length;
   }
 
   String get searchableText {

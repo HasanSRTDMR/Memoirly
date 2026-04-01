@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:memoirly/core/di/providers.dart';
 import 'package:memoirly/core/error/journal_stream_error.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
@@ -30,10 +31,33 @@ class InsightsPage extends ConsumerWidget {
           final moods = useCase.moodDistributionAll(entries);
           final topTags = _topTags(entries);
           final maxBar = weekly.entriesPerWeekday.fold<int>(
-            1,
+            0,
             (a, b) => b > a ? b : a,
           );
           final quoteAsync = ref.watch(dailyQuoteProvider);
+          final locale = Localizations.localeOf(context).toString();
+          final weekEnd = weekly.weekStart.add(const Duration(days: 6));
+          final rangeLabel =
+              '${DateFormat.yMMMd(locale).format(weekly.weekStart)} – ${DateFormat.yMMMd(locale).format(weekEnd)}';
+          final now = DateTime.now();
+          final todayNorm = DateTime(now.year, now.month, now.day);
+          int? peakDayIndex;
+          if (maxBar > 0) {
+            for (var i = 0; i < 7; i++) {
+              if (weekly.entriesPerWeekday[i] != maxBar) continue;
+              final day = weekly.weekStart.add(Duration(days: i));
+              final d = DateTime(day.year, day.month, day.day);
+              if (d == todayNorm) {
+                peakDayIndex = i;
+                break;
+              }
+            }
+            if (peakDayIndex == null) {
+              final idx =
+                  weekly.entriesPerWeekday.indexWhere((c) => c == maxBar);
+              peakDayIndex = idx >= 0 ? idx : null;
+            }
+          }
 
           return LayoutBuilder(
             builder: (context, constraints) {
@@ -66,64 +90,126 @@ class InsightsPage extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          l.moodRhythm,
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                fontFamily: 'Newsreader',
-                                fontStyle: FontStyle.italic,
-                                fontSize: 22,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                l.moodRhythm,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(
+                                      fontFamily: 'Newsreader',
+                                      fontStyle: FontStyle.italic,
+                                      fontSize: 22,
+                                    ),
                               ),
+                              const SizedBox(height: 6),
+                              Text(
+                                rangeLabel,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                      height: 1.25,
+                                    ),
+                              ),
+                            ],
+                          ),
                         ),
+                        const SizedBox(width: 8),
                         Text(
                           l.last7Days,
-                          style: Theme.of(context).textTheme.labelSmall,
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                                letterSpacing: 0.6,
+                              ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 18),
                     SizedBox(
-                      height: 140,
+                      height: 168,
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: List.generate(7, (i) {
-                          final h = maxBar == 0
-                              ? 0.0
-                              : weekly.entriesPerWeekday[i] / maxBar;
-                          final labels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+                          final count = weekly.entriesPerWeekday[i];
+                          final day = weekly.weekStart.add(Duration(days: i));
+                          final ratio =
+                              maxBar == 0 ? 0.0 : count / maxBar;
+                          final isPeak =
+                              peakDayIndex != null && i == peakDayIndex;
+                          final dayNorm =
+                              DateTime(day.year, day.month, day.day);
+                          final isToday = dayNorm == todayNorm;
+                          final theme = Theme.of(context);
+                          final onVar = theme.colorScheme.onSurfaceVariant;
+
                           return Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 3),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 2),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Expanded(
                                     child: Align(
                                       alignment: Alignment.bottomCenter,
-                                      child: FractionallySizedBox(
-                                        heightFactor: h.clamp(0.05, 1.0),
-                                        widthFactor: 1,
-                                        child: DecoratedBox(
-                                          decoration: BoxDecoration(
-                                            color: i == 3
-                                                ? AppColors.primary
-                                                : AppColors.secondaryContainer
-                                                    .withValues(alpha: 0.45),
-                                            borderRadius:
-                                                BorderRadius.circular(999),
-                                          ),
-                                        ),
-                                      ),
+                                      child: count == 0
+                                          ? const SizedBox.shrink()
+                                          : FractionallySizedBox(
+                                              heightFactor: (ratio < 0.12
+                                                      ? 0.12
+                                                      : ratio)
+                                                  .clamp(0.0, 1.0),
+                                              widthFactor: 1,
+                                              alignment:
+                                                  Alignment.bottomCenter,
+                                              child: DecoratedBox(
+                                                decoration: BoxDecoration(
+                                                  color: isPeak
+                                                      ? AppColors.primary
+                                                      : AppColors
+                                                          .secondaryContainer
+                                                          .withValues(
+                                                          alpha: isToday
+                                                              ? 0.72
+                                                              : 0.48,
+                                                        ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          999),
+                                                ),
+                                              ),
+                                            ),
                                     ),
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
-                                    labels[i],
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelSmall
-                                        ?.copyWith(fontSize: 9),
+                                    '${day.day}',
+                                    style: theme.textTheme.labelSmall?.copyWith(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                  ),
+                                  Text(
+                                    DateFormat.E(locale).format(day),
+                                    style: theme.textTheme.labelSmall?.copyWith(
+                                      fontSize: 9,
+                                      color: onVar,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               ),
@@ -323,6 +409,7 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.surfaceContainerLow,

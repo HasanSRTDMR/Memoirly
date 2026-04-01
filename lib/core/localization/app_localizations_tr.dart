@@ -197,7 +197,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get moodRhythm => 'Ruh hali ritmi';
 
   @override
-  String get last7Days => 'Son 7 gün';
+  String get last7Days => 'Bu hafta';
 
   @override
   String get volume => 'Hacim';
