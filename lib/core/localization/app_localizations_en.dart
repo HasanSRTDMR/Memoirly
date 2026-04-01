@@ -212,8 +212,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get avgWordsPerDay => 'Daily average on days you wrote this week';
 
   @override
+  String get avgWordsPerEntry => 'Average words per entry this week';
+
+  @override
+  String get insightsWordsTotalSubtitle =>
+      'Total words in all entries this week';
+
+  @override
+  String insightsWordsAvgPerEntryLine(int avg) {
+    return 'Average per entry: $avg words';
+  }
+
+  @override
+  String get wordsPerEntryChartHint =>
+      'Each bar is one entry this week (oldest to newest). Height is that entry’s word count (title + body). The number below is the week’s total.';
+
+  @override
   String get wordsPerDayChartHint =>
       'Same order as above: each bar is total words you wrote that day.';
+
+  @override
+  String get insightsWordsChartEmpty => 'No entries this week yet.';
+
+  @override
+  String get insightsPeriodToday => 'Today';
+
+  @override
+  String get insightsPeriodWeek => 'This week';
+
+  @override
+  String get insightsPeriodMonth => 'This month';
+
+  @override
+  String get insightsPeriodYear => 'This year';
 
   @override
   String get words => 'words';
@@ -235,7 +266,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get moodValenceSubtitle =>
-      'Combined from moods you pick on entries (whole archive). Based on those labels, not on analyzing your text.';
+      'Pick a time range from the menu. Averages moods you chose on entries in that period—labels only, not text analysis.';
 
   @override
   String moodValenceScoreOf100(int score) {

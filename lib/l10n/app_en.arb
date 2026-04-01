@@ -72,14 +72,28 @@
   "last7Days": "This week",
   "volume": "Words this week",
   "avgWordsPerDay": "Daily average on days you wrote this week",
+  "avgWordsPerEntry": "Average words per entry this week",
+  "insightsWordsTotalSubtitle": "Total words in all entries this week",
+  "insightsWordsAvgPerEntryLine": "Average per entry: {avg} words",
+  "@insightsWordsAvgPerEntryLine": {
+    "placeholders": {
+      "avg": {"type": "int"}
+    }
+  },
+  "wordsPerEntryChartHint": "Each bar is one entry this week (oldest to newest). Height is that entry’s word count (title + body). The number below is the week’s total.",
   "wordsPerDayChartHint": "Same order as above: each bar is total words you wrote that day.",
+  "insightsWordsChartEmpty": "No entries this week yet.",
+  "insightsPeriodToday": "Today",
+  "insightsPeriodWeek": "This week",
+  "insightsPeriodMonth": "This month",
+  "insightsPeriodYear": "This year",
   "words": "words",
   "themes": "Themes",
   "frequentlyTagged": "Frequently tagged",
   "totalEntries": "Total entries",
   "moodDistribution": "Mood distribution",
   "moodValenceTitle": "Your mood average",
-  "moodValenceSubtitle": "Combined from moods you pick on entries (whole archive). Based on those labels, not on analyzing your text.",
+  "moodValenceSubtitle": "Pick a time range from the menu. Averages moods you chose on entries in that period—labels only, not text analysis.",
   "moodValenceScoreOf100": "{score}/100",
   "@moodValenceScoreOf100": {
     "placeholders": {

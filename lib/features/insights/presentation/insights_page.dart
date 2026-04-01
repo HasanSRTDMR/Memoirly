@@ -11,11 +11,18 @@ import 'package:memoirly/domain/entities/daily_quote.dart';
 import 'package:memoirly/domain/entities/journal_entry.dart';
 import 'package:memoirly/domain/usecases/insights/compute_insights_usecase.dart';
 
-class InsightsPage extends ConsumerWidget {
+class InsightsPage extends ConsumerStatefulWidget {
   const InsightsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<InsightsPage> createState() => _InsightsPageState();
+}
+
+class _InsightsPageState extends ConsumerState<InsightsPage> {
+  InsightPeriod _moodPeriod = InsightPeriod.week;
+
+  @override
+  Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final entriesAsync = ref.watch(journalEntriesStreamProvider);
     final useCase = ref.watch(computeInsightsUseCaseProvider);
@@ -29,7 +36,9 @@ class InsightsPage extends ConsumerWidget {
             ),
         data: (entries) {
           final weekly = useCase.fromEntries(entries);
-          final overallMood = useCase.overallMoodValence(entries);
+          final moodSlice =
+              useCase.entriesInPeriod(entries, _moodPeriod);
+          final overallMood = OverallMoodValence.fromEntries(moodSlice);
           final moods = useCase.moodDistributionAll(entries);
           final topTags = _topTags(entries);
           final maxBar = weekly.entriesPerWeekday.fold<int>(
@@ -82,7 +91,12 @@ class InsightsPage extends ConsumerWidget {
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: 24),
-              _MoodValenceCard(l: l, overall: overallMood),
+              _MoodValenceCard(
+                l: l,
+                overall: overallMood,
+                selectedPeriod: _moodPeriod,
+                onPeriodChanged: (p) => setState(() => _moodPeriod = p),
+              ),
               const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.all(22),
@@ -244,11 +258,17 @@ class InsightsPage extends ConsumerWidget {
                   children: [
                     _StatCard(
                       title: l.volume,
-                      subtitle: l.avgWordsPerDay,
-                      wordsChartHint: l.wordsPerDayChartHint,
-                      value: '${weekly.avgWordsPerDay}',
+                      subtitle: l.insightsWordsTotalSubtitle,
+                      wordsChartHint: l.wordsPerEntryChartHint,
+                      wordsChartEmptyLabel: l.insightsWordsChartEmpty,
+                      value: '${weekly.totalWords}',
                       suffix: l.words,
-                      wordsPerWeekday: weekly.wordsPerWeekday,
+                      wordsPerEntry: weekly.wordCountsPerEntry,
+                      wordsFooterLine: weekly.wordCountsPerEntry.isEmpty
+                          ? null
+                          : l.insightsWordsAvgPerEntryLine(
+                              weekly.avgWordsPerEntry,
+                            ),
                     ),
                     const SizedBox(height: 12),
                     _StatCard(
@@ -265,11 +285,17 @@ class InsightsPage extends ConsumerWidget {
                     Expanded(
                       child: _StatCard(
                         title: l.volume,
-                        subtitle: l.avgWordsPerDay,
-                        wordsChartHint: l.wordsPerDayChartHint,
-                        value: '${weekly.avgWordsPerDay}',
+                        subtitle: l.insightsWordsTotalSubtitle,
+                        wordsChartHint: l.wordsPerEntryChartHint,
+                        wordsChartEmptyLabel: l.insightsWordsChartEmpty,
+                        value: '${weekly.totalWords}',
                         suffix: l.words,
-                        wordsPerWeekday: weekly.wordsPerWeekday,
+                        wordsPerEntry: weekly.wordCountsPerEntry,
+                        wordsFooterLine: weekly.wordCountsPerEntry.isEmpty
+                            ? null
+                            : l.insightsWordsAvgPerEntryLine(
+                                weekly.avgWordsPerEntry,
+                              ),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -336,6 +362,19 @@ class InsightsPage extends ConsumerWidget {
     final list = m.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     return list.take(8).toList();
+  }
+}
+
+String _insightPeriodLabel(AppLocalizations l, InsightPeriod p) {
+  switch (p) {
+    case InsightPeriod.today:
+      return l.insightsPeriodToday;
+    case InsightPeriod.week:
+      return l.insightsPeriodWeek;
+    case InsightPeriod.month:
+      return l.insightsPeriodMonth;
+    case InsightPeriod.year:
+      return l.insightsPeriodYear;
   }
 }
 
@@ -459,15 +498,20 @@ class _MoodValenceCard extends StatelessWidget {
   const _MoodValenceCard({
     required this.l,
     required this.overall,
+    required this.selectedPeriod,
+    required this.onPeriodChanged,
   });
 
   final AppLocalizations l;
   final OverallMoodValence overall;
+  final InsightPeriod selectedPeriod;
+  final ValueChanged<InsightPeriod> onPeriodChanged;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    final hasScore = overall.averageValence != null;
 
     return Container(
       width: double.infinity,
@@ -476,8 +520,63 @@ class _MoodValenceCard extends StatelessWidget {
         color: AppColors.surfaceContainerLow,
         borderRadius: BorderRadius.circular(28),
       ),
-      child: overall.averageValence == null
-          ? Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  l.moodValenceTitle,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontFamily: 'Newsreader',
+                    fontStyle: FontStyle.italic,
+                    fontSize: 22,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              DropdownButtonHideUnderline(
+                child: DropdownButton<InsightPeriod>(
+                  value: selectedPeriod,
+                  isDense: true,
+                  borderRadius: BorderRadius.circular(16),
+                  padding: EdgeInsets.zero,
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  icon: Icon(
+                    Icons.expand_more_rounded,
+                    size: 22,
+                    color: scheme.onSurfaceVariant,
+                  ),
+                  items: [
+                    for (final p in InsightPeriod.values)
+                      DropdownMenuItem(
+                        value: p,
+                        child: Text(_insightPeriodLabel(l, p)),
+                      ),
+                  ],
+                  onChanged: (v) {
+                    if (v != null) onPeriodChanged(v);
+                  },
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l.moodValenceSubtitle,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: scheme.onSurfaceVariant,
+              height: 1.35,
+            ),
+          ),
+          if (!hasScore) ...[
+            const SizedBox(height: 18),
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Icon(
@@ -495,7 +594,7 @@ class _MoodValenceCard extends StatelessWidget {
                         style: theme.textTheme.titleLarge?.copyWith(
                           fontFamily: 'Newsreader',
                           fontStyle: FontStyle.italic,
-                          fontSize: 22,
+                          fontSize: 20,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -510,45 +609,35 @@ class _MoodValenceCard extends StatelessWidget {
                   ),
                 ),
               ],
-            )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l.moodValenceTitle,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontFamily: 'Newsreader',
-                    fontStyle: FontStyle.italic,
-                    fontSize: 22,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l.moodValenceSubtitle,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: scheme.onSurfaceVariant,
-                    height: 1.35,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                _MoodEmojiMeter(score: overall.toneScoreOutOf100!),
-                const SizedBox(height: 10),
-                Text(
-                  l.moodValenceSample(overall.entriesWithMood),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: scheme.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  _moodTonePhrase(l, overall.averageValence!),
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontStyle: FontStyle.italic,
-                    height: 1.4,
-                  ),
-                ),
-              ],
             ),
+            const SizedBox(height: 14),
+            Text(
+              l.moodValenceSample(overall.entriesWithMood),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+            ),
+          ] else ...[
+            const SizedBox(height: 16),
+            _MoodEmojiMeter(score: overall.toneScoreOutOf100!),
+            const SizedBox(height: 10),
+            Text(
+              l.moodValenceSample(overall.entriesWithMood),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              _moodTonePhrase(l, overall.averageValence!),
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontStyle: FontStyle.italic,
+                height: 1.4,
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
@@ -627,28 +716,32 @@ class _StatCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.wordsChartHint,
+    this.wordsChartEmptyLabel,
     this.value,
     this.suffix,
-    this.wordsPerWeekday,
+    this.wordsPerEntry,
+    this.wordsFooterLine,
     this.chips,
   });
 
   final String title;
   final String subtitle;
   final String? wordsChartHint;
+  final String? wordsChartEmptyLabel;
   final String? value;
   final String? suffix;
-  final List<int>? wordsPerWeekday;
+  final List<int>? wordsPerEntry;
+  final String? wordsFooterLine;
   final List<MapEntry<String, int>>? chips;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final maxWords = wordsPerWeekday == null || wordsPerWeekday!.isEmpty
+    final maxWords = wordsPerEntry == null || wordsPerEntry!.isEmpty
         ? 0
-        : wordsPerWeekday!.reduce((a, b) => a > b ? a : b);
-    final peakWordDay = maxWords > 0
-        ? wordsPerWeekday!.indexWhere((w) => w == maxWords)
+        : wordsPerEntry!.reduce((a, b) => a > b ? a : b);
+    final peakEntryIndex = maxWords > 0
+        ? wordsPerEntry!.indexWhere((w) => w == maxWords)
         : -1;
 
     return Container(
@@ -680,48 +773,52 @@ class _StatCard extends StatelessWidget {
                   ),
             ),
           ],
-          if (wordsPerWeekday != null) ...[
+          if (wordsPerEntry != null) ...[
             const SizedBox(height: 16),
             SizedBox(
               height: 56,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: List.generate(7, (i) {
-                  final w = i < wordsPerWeekday!.length
-                      ? wordsPerWeekday![i]
-                      : 0;
-                  final ratio =
-                      maxWords == 0 ? 0.0 : w / maxWords;
-                  final isPeak = peakWordDay >= 0 && i == peakWordDay;
-
-                  return Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: w == 0
-                            ? const SizedBox.shrink()
-                            : FractionallySizedBox(
-                                heightFactor:
-                                    (ratio < 0.12 ? 0.12 : ratio)
-                                        .clamp(0.0, 1.0),
-                                widthFactor: 1,
-                                alignment: Alignment.bottomCenter,
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: isPeak
-                                        ? AppColors.primary
-                                        : AppColors.secondaryContainer
-                                            .withValues(alpha: 0.55),
-                                    borderRadius: BorderRadius.circular(999),
-                                  ),
+              child: wordsPerEntry!.isEmpty
+                  ? Center(
+                      child: Text(
+                        wordsChartEmptyLabel ?? '',
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                      ),
+                    )
+                  : ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: wordsPerEntry!.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 4),
+                      itemBuilder: (context, i) {
+                        final w = wordsPerEntry![i];
+                        final ratio = maxWords == 0 ? 0.0 : w / maxWords;
+                        final isPeak =
+                            peakEntryIndex >= 0 && i == peakEntryIndex;
+                        return SizedBox(
+                          width: 10,
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: FractionallySizedBox(
+                              heightFactor: (ratio < 0.12 ? 0.12 : ratio)
+                                  .clamp(0.0, 1.0),
+                              widthFactor: 1,
+                              alignment: Alignment.bottomCenter,
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: isPeak
+                                      ? AppColors.primary
+                                      : AppColors.secondaryContainer
+                                          .withValues(alpha: 0.55),
+                                  borderRadius: BorderRadius.circular(999),
                                 ),
                               ),
-                      ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                }),
-              ),
             ),
             const SizedBox(height: 12),
             Row(
@@ -743,6 +840,15 @@ class _StatCard extends StatelessWidget {
                 ),
               ],
             ),
+            if (wordsFooterLine != null && wordsFooterLine!.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                wordsFooterLine!,
+                style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+              ),
+            ],
           ],
           if (chips != null && chips!.isNotEmpty) ...[
             const SizedBox(height: 12),

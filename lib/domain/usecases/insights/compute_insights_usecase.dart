@@ -2,6 +2,14 @@ import 'package:collection/collection.dart';
 import 'package:memoirly/core/constants/mood_valence.dart';
 import 'package:memoirly/domain/entities/journal_entry.dart';
 
+/// Time window for mood average (and reusable entry filters).
+enum InsightPeriod {
+  today,
+  week,
+  month,
+  year,
+}
+
 /// Aggregate mood tone from all entries that have a known mood key.
 class OverallMoodValence {
   const OverallMoodValence._({
@@ -54,7 +62,8 @@ class WeeklyInsight {
     required this.moodCounts,
     required this.tagCounts,
     required this.entriesPerWeekday,
-    required this.wordsPerWeekday,
+    required this.wordCountsPerEntry,
+    required this.avgWordsPerEntry,
   });
 
   /// Monday 00:00 local date for the insight week (same range as [entriesPerWeekday]).
@@ -67,8 +76,11 @@ class WeeklyInsight {
   /// 0 = Monday ... 6 = Sunday (DateTime.weekday order)
   final List<int> entriesPerWeekday;
 
-  /// Total word count per weekday in the same week (same index order).
-  final List<int> wordsPerWeekday;
+  /// This week’s entries, oldest → newest; each value is that entry’s word count.
+  final List<int> wordCountsPerEntry;
+
+  /// Mean word count per entry this week (0 if no entries).
+  final int avgWordsPerEntry;
 }
 
 class ComputeInsightsUseCase {
@@ -111,14 +123,20 @@ class ComputeInsightsUseCase {
     }
 
     final perDay = List<int>.filled(7, 0);
-    final wordsPerDay = List<int>.filled(7, 0);
     for (final e in weekEntries) {
       final wd = e.createdAt.weekday - 1;
-      if (wd >= 0 && wd < 7) {
-        perDay[wd]++;
-        wordsPerDay[wd] += e.wordCount;
-      }
+      if (wd >= 0 && wd < 7) perDay[wd]++;
     }
+
+    final sortedByTime = [...weekEntries]
+      ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    final wordCountsPerEntry =
+        sortedByTime.map((e) => e.wordCount).toList();
+    final avgPerEntry = wordCountsPerEntry.isEmpty
+        ? 0
+        : (wordCountsPerEntry.fold<int>(0, (a, b) => a + b) /
+                wordCountsPerEntry.length)
+            .round();
 
     return WeeklyInsight(
       weekStart: weekStart,
@@ -128,12 +146,39 @@ class ComputeInsightsUseCase {
       moodCounts: moodCounts,
       tagCounts: tagCounts,
       entriesPerWeekday: perDay,
-      wordsPerWeekday: wordsPerDay,
+      wordCountsPerEntry: wordCountsPerEntry,
+      avgWordsPerEntry: avgPerEntry,
     );
   }
 
-  OverallMoodValence overallMoodValence(List<JournalEntry> all) {
-    return OverallMoodValence.fromEntries(all);
+  /// Entries whose [JournalEntry.createdAt] falls in [period] (local calendar).
+  List<JournalEntry> entriesInPeriod(
+    List<JournalEntry> all,
+    InsightPeriod period, {
+    DateTime? now,
+  }) {
+    final n = now ?? DateTime.now();
+    final startOfToday = DateTime(n.year, n.month, n.day);
+    final DateTime start;
+    final DateTime endExclusive;
+    if (period == InsightPeriod.today) {
+      start = startOfToday;
+      endExclusive = startOfToday.add(const Duration(days: 1));
+    } else if (period == InsightPeriod.week) {
+      final ws = n.subtract(Duration(days: n.weekday - 1));
+      start = DateTime(ws.year, ws.month, ws.day);
+      endExclusive = start.add(const Duration(days: 7));
+    } else if (period == InsightPeriod.month) {
+      start = DateTime(n.year, n.month, 1);
+      endExclusive = DateTime(n.year, n.month + 1, 1);
+    } else {
+      start = DateTime(n.year, 1, 1);
+      endExclusive = DateTime(n.year + 1, 1, 1);
+    }
+    return all
+        .where((e) =>
+            !e.createdAt.isBefore(start) && e.createdAt.isBefore(endExclusive))
+        .toList();
   }
 
   Map<String, int> moodDistributionAll(List<JournalEntry> all) {

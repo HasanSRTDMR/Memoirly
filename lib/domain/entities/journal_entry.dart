@@ -25,14 +25,13 @@ class JournalEntry extends Equatable {
   /// When set, body text is shown in this color in the reader (ARGB, 32-bit).
   final int? contentColorArgb;
 
+  /// Title + body; counts Unicode letter/number runs (works for Turkish and Latin).
   int get wordCount {
     final t = title.trim();
     final c = content.trim();
-    final parts = <String>[];
-    if (t.isNotEmpty) parts.add(t);
-    if (c.isNotEmpty) parts.add(c);
-    if (parts.isEmpty) return 0;
-    return parts.join(' ').split(RegExp(r'\s+')).length;
+    if (t.isEmpty && c.isEmpty) return 0;
+    final merged = [if (t.isNotEmpty) t, if (c.isNotEmpty) c].join(' ');
+    return RegExp(r'[\p{L}\p{N}]+', unicode: true).allMatches(merged).length;
   }
 
   String get searchableText {

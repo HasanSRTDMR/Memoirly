@@ -470,11 +470,65 @@ abstract class AppLocalizations {
   /// **'Daily average on days you wrote this week'**
   String get avgWordsPerDay;
 
+  /// No description provided for @avgWordsPerEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Average words per entry this week'**
+  String get avgWordsPerEntry;
+
+  /// No description provided for @insightsWordsTotalSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Total words in all entries this week'**
+  String get insightsWordsTotalSubtitle;
+
+  /// No description provided for @insightsWordsAvgPerEntryLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Average per entry: {avg} words'**
+  String insightsWordsAvgPerEntryLine(int avg);
+
+  /// No description provided for @wordsPerEntryChartHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Each bar is one entry this week (oldest to newest). Height is that entry’s word count (title + body). The number below is the week’s total.'**
+  String get wordsPerEntryChartHint;
+
   /// No description provided for @wordsPerDayChartHint.
   ///
   /// In en, this message translates to:
   /// **'Same order as above: each bar is total words you wrote that day.'**
   String get wordsPerDayChartHint;
+
+  /// No description provided for @insightsWordsChartEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries this week yet.'**
+  String get insightsWordsChartEmpty;
+
+  /// No description provided for @insightsPeriodToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get insightsPeriodToday;
+
+  /// No description provided for @insightsPeriodWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get insightsPeriodWeek;
+
+  /// No description provided for @insightsPeriodMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get insightsPeriodMonth;
+
+  /// No description provided for @insightsPeriodYear.
+  ///
+  /// In en, this message translates to:
+  /// **'This year'**
+  String get insightsPeriodYear;
 
   /// No description provided for @words.
   ///
@@ -515,7 +569,7 @@ abstract class AppLocalizations {
   /// No description provided for @moodValenceSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Combined from moods you pick on entries (whole archive). Based on those labels, not on analyzing your text.'**
+  /// **'Pick a time range from the menu. Averages moods you chose on entries in that period—labels only, not text analysis.'**
   String get moodValenceSubtitle;
 
   /// No description provided for @moodValenceScoreOf100.

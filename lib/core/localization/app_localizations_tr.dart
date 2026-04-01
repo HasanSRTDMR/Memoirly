@@ -211,8 +211,39 @@ class AppLocalizationsTr extends AppLocalizations {
       'Yazdığın günlere göre bu haftanın günlük ortalaması';
 
   @override
+  String get avgWordsPerEntry => 'Bu haftaki her yazımda ortalama kelime';
+
+  @override
+  String get insightsWordsTotalSubtitle =>
+      'Bu haftadaki tüm kayıtlarda toplam kelime';
+
+  @override
+  String insightsWordsAvgPerEntryLine(int avg) {
+    return 'Kayıt başına ortalama: $avg kelime';
+  }
+
+  @override
+  String get wordsPerEntryChartHint =>
+      'Her çubuk bir kayıt (bu hafta, eskiden yeniye). Yükseklik o kayıttaki kelime sayısı (başlık+gövde). Alttaki sayı bu haftanın toplamı.';
+
+  @override
   String get wordsPerDayChartHint =>
       'Üstteki günlerle aynı sıra: her çubuk o gün yazdığın toplam kelime.';
+
+  @override
+  String get insightsWordsChartEmpty => 'Bu hafta henüz yazım yok.';
+
+  @override
+  String get insightsPeriodToday => 'Bugün';
+
+  @override
+  String get insightsPeriodWeek => 'Bu hafta';
+
+  @override
+  String get insightsPeriodMonth => 'Bu ay';
+
+  @override
+  String get insightsPeriodYear => 'Bu yıl';
 
   @override
   String get words => 'kelime';
@@ -234,7 +265,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get moodValenceSubtitle =>
-      'Kayıtlarda seçtiğin ruh hallerinin birleşimi (tüm arşiv). Metin içeriğine göre değil, seçtiğin etiketlere göre hesaplanır.';
+      'Sağdaki menüden aralık seç. O dönemdeki kayıtlarda seçtiğin ruh hallerinin birleşimi; metin analizi değil, etiketlere göre hesaplanır.';
 
   @override
   String moodValenceScoreOf100(int score) {

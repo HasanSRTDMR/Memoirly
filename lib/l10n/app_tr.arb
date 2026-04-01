@@ -62,14 +62,28 @@
   "last7Days": "Bu hafta",
   "volume": "Kelime grafiği",
   "avgWordsPerDay": "Yazdığın günlere göre bu haftanın günlük ortalaması",
+  "avgWordsPerEntry": "Bu haftaki her yazımda ortalama kelime",
+  "insightsWordsTotalSubtitle": "Bu haftadaki tüm kayıtlarda toplam kelime",
+  "insightsWordsAvgPerEntryLine": "Kayıt başına ortalama: {avg} kelime",
+  "@insightsWordsAvgPerEntryLine": {
+    "placeholders": {
+      "avg": {"type": "int"}
+    }
+  },
+  "wordsPerEntryChartHint": "Her çubuk bir kayıt (bu hafta, eskiden yeniye). Yükseklik o kayıttaki kelime sayısı (başlık+gövde). Alttaki sayı bu haftanın toplamı.",
   "wordsPerDayChartHint": "Üstteki günlerle aynı sıra: her çubuk o gün yazdığın toplam kelime.",
+  "insightsWordsChartEmpty": "Bu hafta henüz yazım yok.",
+  "insightsPeriodToday": "Bugün",
+  "insightsPeriodWeek": "Bu hafta",
+  "insightsPeriodMonth": "Bu ay",
+  "insightsPeriodYear": "Bu yıl",
   "words": "kelime",
   "themes": "Temalar",
   "frequentlyTagged": "Sık kullanılan etiketler",
   "totalEntries": "Toplam kayıt",
   "moodDistribution": "Ruh hali dağılımı",
   "moodValenceTitle": "Ruh hali ortalaman",
-  "moodValenceSubtitle": "Kayıtlarda seçtiğin ruh hallerinin birleşimi (tüm arşiv). Metin içeriğine göre değil, seçtiğin etiketlere göre hesaplanır.",
+  "moodValenceSubtitle": "Sağdaki menüden aralık seç. O dönemdeki kayıtlarda seçtiğin ruh hallerinin birleşimi; metin analizi değil, etiketlere göre hesaplanır.",
   "moodValenceScoreOf100": "{score}/100",
   "@moodValenceScoreOf100": {
     "placeholders": {
