@@ -9,6 +9,7 @@ import 'package:memoirly/core/theme/app_colors.dart';
 import 'package:memoirly/core/widgets/archive_app_bar.dart';
 import 'package:memoirly/domain/entities/daily_quote.dart';
 import 'package:memoirly/domain/entities/journal_entry.dart';
+import 'package:memoirly/domain/usecases/insights/compute_insights_usecase.dart';
 
 class InsightsPage extends ConsumerWidget {
   const InsightsPage({super.key});
@@ -28,6 +29,7 @@ class InsightsPage extends ConsumerWidget {
             ),
         data: (entries) {
           final weekly = useCase.fromEntries(entries);
+          final overallMood = useCase.overallMoodValence(entries);
           final moods = useCase.moodDistributionAll(entries);
           final topTags = _topTags(entries);
           final maxBar = weekly.entriesPerWeekday.fold<int>(
@@ -80,6 +82,8 @@ class InsightsPage extends ConsumerWidget {
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: 24),
+              _MoodValenceCard(l: l, overall: overallMood),
+              const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.all(22),
                 decoration: BoxDecoration(
@@ -118,6 +122,19 @@ class InsightsPage extends ConsumerWidget {
                                           .colorScheme
                                           .onSurfaceVariant,
                                       height: 1.25,
+                                    ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                l.writingByDayHint,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                      height: 1.35,
                                     ),
                               ),
                             ],
@@ -228,9 +245,10 @@ class InsightsPage extends ConsumerWidget {
                     _StatCard(
                       title: l.volume,
                       subtitle: l.avgWordsPerDay,
+                      wordsChartHint: l.wordsPerDayChartHint,
                       value: '${weekly.avgWordsPerDay}',
                       suffix: l.words,
-                      miniBars: true,
+                      wordsPerWeekday: weekly.wordsPerWeekday,
                     ),
                     const SizedBox(height: 12),
                     _StatCard(
@@ -248,9 +266,10 @@ class InsightsPage extends ConsumerWidget {
                       child: _StatCard(
                         title: l.volume,
                         subtitle: l.avgWordsPerDay,
+                        wordsChartHint: l.wordsPerDayChartHint,
                         value: '${weekly.avgWordsPerDay}',
                         suffix: l.words,
-                        miniBars: true,
+                        wordsPerWeekday: weekly.wordsPerWeekday,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -317,6 +336,220 @@ class InsightsPage extends ConsumerWidget {
     final list = m.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     return list.take(8).toList();
+  }
+}
+
+String _moodTonePhrase(AppLocalizations l, double v) {
+  if (v >= 0.42) return l.moodTonePhraseVeryPositive;
+  if (v >= 0.12) return l.moodTonePhrasePositive;
+  if (v > -0.12) return l.moodTonePhraseBalanced;
+  if (v > -0.45) return l.moodTonePhraseDifficult;
+  return l.moodTonePhraseHeavy;
+}
+
+/// Sentiment icon scale (same icons as write screen mood row), low → high score.
+class _MoodEmojiMeter extends StatelessWidget {
+  const _MoodEmojiMeter({required this.score});
+
+  static const _icons = <IconData>[
+    Icons.sentiment_very_dissatisfied,
+    Icons.sentiment_dissatisfied,
+    Icons.sentiment_neutral,
+    Icons.sentiment_satisfied,
+    Icons.sentiment_very_satisfied,
+  ];
+
+  final int score;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final iconColor = scheme.onSurfaceVariant;
+    final t = (score / 100.0).clamp(0.0, 1.0);
+    const thumbSize = 14.0;
+    const trackH = 10.0;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final w = constraints.maxWidth;
+        final thumbLeft = t * (w - thumbSize);
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                for (final icon in _icons)
+                  Expanded(
+                    child: Icon(
+                      icon,
+                      size: 22,
+                      color: iconColor,
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              height: 18,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 4,
+                    child: Container(
+                      height: trackH,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(999),
+                        color: scheme.surfaceContainerHighest
+                            .withValues(alpha: 0.75),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 0,
+                    top: 4,
+                    child: SizedBox(
+                      width: w * t,
+                      height: trackH,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(999),
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: thumbLeft,
+                    top: 2,
+                    child: Container(
+                      width: thumbSize,
+                      height: thumbSize,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: scheme.surface,
+                          width: 2.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: scheme.shadow.withValues(alpha: 0.12),
+                            blurRadius: 4,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _MoodValenceCard extends StatelessWidget {
+  const _MoodValenceCard({
+    required this.l,
+    required this.overall,
+  });
+
+  final AppLocalizations l;
+  final OverallMoodValence overall;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: overall.averageValence == null
+          ? Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.sentiment_neutral_rounded,
+                  size: 36,
+                  color: scheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l.moodValenceEmpty,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontFamily: 'Newsreader',
+                          fontStyle: FontStyle.italic,
+                          fontSize: 22,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        l.moodValenceEmptyBody,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                          height: 1.35,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l.moodValenceTitle,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontFamily: 'Newsreader',
+                    fontStyle: FontStyle.italic,
+                    fontSize: 22,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l.moodValenceSubtitle,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                    height: 1.35,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _MoodEmojiMeter(score: overall.toneScoreOutOf100!),
+                const SizedBox(height: 10),
+                Text(
+                  l.moodValenceSample(overall.entriesWithMood),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  _moodTonePhrase(l, overall.averageValence!),
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontStyle: FontStyle.italic,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+    );
   }
 }
 
@@ -393,21 +626,31 @@ class _StatCard extends StatelessWidget {
   const _StatCard({
     required this.title,
     required this.subtitle,
+    this.wordsChartHint,
     this.value,
     this.suffix,
-    this.miniBars = false,
+    this.wordsPerWeekday,
     this.chips,
   });
 
   final String title;
   final String subtitle;
+  final String? wordsChartHint;
   final String? value;
   final String? suffix;
-  final bool miniBars;
+  final List<int>? wordsPerWeekday;
   final List<MapEntry<String, int>>? chips;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final maxWords = wordsPerWeekday == null || wordsPerWeekday!.isEmpty
+        ? 0
+        : wordsPerWeekday!.reduce((a, b) => a > b ? a : b);
+    final peakWordDay = maxWords > 0
+        ? wordsPerWeekday!.indexWhere((w) => w == maxWords)
+        : -1;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -420,37 +663,64 @@ class _StatCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            style: theme.textTheme.titleLarge?.copyWith(
                   fontFamily: 'Newsreader',
                   fontStyle: FontStyle.italic,
                   fontSize: 20,
                 ),
           ),
-          Text(subtitle, style: Theme.of(context).textTheme.labelSmall),
-          if (miniBars) ...[
+          Text(subtitle, style: theme.textTheme.labelSmall),
+          if (wordsChartHint != null && wordsChartHint!.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              wordsChartHint!,
+              style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    height: 1.35,
+                  ),
+            ),
+          ],
+          if (wordsPerWeekday != null) ...[
             const SizedBox(height: 16),
             SizedBox(
               height: 56,
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: List.generate(
-                  5,
-                  (i) => Expanded(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: List.generate(7, (i) {
+                  final w = i < wordsPerWeekday!.length
+                      ? wordsPerWeekday![i]
+                      : 0;
+                  final ratio =
+                      maxWords == 0 ? 0.0 : w / maxWords;
+                  final isPeak = peakWordDay >= 0 && i == peakWordDay;
+
+                  return Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 2),
-                      child: Container(
-                        height: [16.0, 28.0, 22.0, 40.0, 32.0][i],
-                        decoration: BoxDecoration(
-                          color: i == 3
-                              ? AppColors.primary
-                              : AppColors.outlineVariant
-                                  .withValues(alpha: 0.25 + i * 0.08),
-                          borderRadius: BorderRadius.circular(999),
-                        ),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: w == 0
+                            ? const SizedBox.shrink()
+                            : FractionallySizedBox(
+                                heightFactor:
+                                    (ratio < 0.12 ? 0.12 : ratio)
+                                        .clamp(0.0, 1.0),
+                                widthFactor: 1,
+                                alignment: Alignment.bottomCenter,
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: isPeak
+                                        ? AppColors.primary
+                                        : AppColors.secondaryContainer
+                                            .withValues(alpha: 0.55),
+                                    borderRadius: BorderRadius.circular(999),
+                                  ),
+                                ),
+                              ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                }),
               ),
             ),
             const SizedBox(height: 12),
@@ -460,14 +730,14 @@ class _StatCard extends StatelessWidget {
               children: [
                 Text(
                   value ?? '0',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  style: theme.textTheme.headlineMedium?.copyWith(
                         fontSize: 32,
                       ),
                 ),
                 const SizedBox(width: 6),
                 Text(
                   suffix ?? '',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  style: theme.textTheme.bodyMedium?.copyWith(
                         fontStyle: FontStyle.italic,
                       ),
                 ),

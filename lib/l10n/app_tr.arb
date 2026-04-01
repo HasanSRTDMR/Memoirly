@@ -57,15 +57,38 @@
   "weeklyOverview": "Haftalık özet",
   "weeklyWroteDays": "Bu hafta {days} gün yazdın.",
   "weeklyConsistency": "Yansımaların giderek daha tutarlı.",
-  "moodRhythm": "Ruh hali ritmi",
+  "moodRhythm": "Haftalık yazım",
+  "writingByDayHint": "Her sütun bir gün. Çubuk ne kadar yüksekse o gün o kadar çok kayıt açmışsın.",
   "last7Days": "Bu hafta",
-  "volume": "Hacim",
-  "avgWordsPerDay": "Günlük ortalama kelime",
+  "volume": "Kelime grafiği",
+  "avgWordsPerDay": "Yazdığın günlere göre bu haftanın günlük ortalaması",
+  "wordsPerDayChartHint": "Üstteki günlerle aynı sıra: her çubuk o gün yazdığın toplam kelime.",
   "words": "kelime",
   "themes": "Temalar",
   "frequentlyTagged": "Sık kullanılan etiketler",
   "totalEntries": "Toplam kayıt",
   "moodDistribution": "Ruh hali dağılımı",
+  "moodValenceTitle": "Ruh hali ortalaman",
+  "moodValenceSubtitle": "Kayıtlarda seçtiğin ruh hallerinin birleşimi (tüm arşiv). Metin içeriğine göre değil, seçtiğin etiketlere göre hesaplanır.",
+  "moodValenceScoreOf100": "{score}/100",
+  "@moodValenceScoreOf100": {
+    "placeholders": {
+      "score": {"type": "int"}
+    }
+  },
+  "moodValenceSample": "{count} kayıtta ruh hali seçilmiş",
+  "@moodValenceSample": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "moodValenceEmpty": "Henüz ortalama yok",
+  "moodValenceEmptyBody": "Yazarken ruh hali seçtiğinde, burada tüm arşivine göre bir ton özeti görünür.",
+  "moodTonePhraseVeryPositive": "Yazıların genelde neşeli ve açık bir tonda.",
+  "moodTonePhrasePositive": "Genelde olumlu ve sıcak bir çizgidesin.",
+  "moodTonePhraseBalanced": "Duygusal olarak dengeli bir görünüm.",
+  "moodTonePhraseDifficult": "Bazı kayıtlar daha ağır; bu normal ve sık geçicidir.",
+  "moodTonePhraseHeavy": "Son kayıtların daha zorlayıcı duygular taşıyor; kendine nazik ol.",
   "settingsTitle": "Ayarlar",
   "settingsSubtitle": "Özel alanını yapılandır",
   "security": "Güvenlik",

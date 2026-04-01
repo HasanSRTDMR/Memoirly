@@ -1,5 +1,49 @@
 import 'package:collection/collection.dart';
+import 'package:memoirly/core/constants/mood_valence.dart';
 import 'package:memoirly/domain/entities/journal_entry.dart';
+
+/// Aggregate mood tone from all entries that have a known mood key.
+class OverallMoodValence {
+  const OverallMoodValence._({
+    required this.averageValence,
+    required this.entriesWithMood,
+  });
+
+  const OverallMoodValence.none()
+      : averageValence = null,
+        entriesWithMood = 0;
+
+  factory OverallMoodValence.fromEntries(List<JournalEntry> all) {
+    var sum = 0.0;
+    var n = 0;
+    for (final e in all) {
+      final v = moodValenceForKey(e.mood);
+      if (v == null) continue;
+      sum += v;
+      n++;
+    }
+    if (n == 0) {
+      return const OverallMoodValence.none();
+    }
+    return OverallMoodValence._(
+      averageValence: sum / n,
+      entriesWithMood: n,
+    );
+  }
+
+  /// Average in [-1, 1], or null if no scored moods.
+  final double? averageValence;
+
+  /// Entries that contributed (had a known mood).
+  final int entriesWithMood;
+
+  /// 0 = very heavy tone, 50 ≈ neutral, 100 = very bright.
+  int? get toneScoreOutOf100 {
+    final v = averageValence;
+    if (v == null) return null;
+    return ((v + 1) / 2 * 100).round().clamp(0, 100);
+  }
+}
 
 class WeeklyInsight {
   const WeeklyInsight({
@@ -10,6 +54,7 @@ class WeeklyInsight {
     required this.moodCounts,
     required this.tagCounts,
     required this.entriesPerWeekday,
+    required this.wordsPerWeekday,
   });
 
   /// Monday 00:00 local date for the insight week (same range as [entriesPerWeekday]).
@@ -21,6 +66,9 @@ class WeeklyInsight {
   final Map<String, int> tagCounts;
   /// 0 = Monday ... 6 = Sunday (DateTime.weekday order)
   final List<int> entriesPerWeekday;
+
+  /// Total word count per weekday in the same week (same index order).
+  final List<int> wordsPerWeekday;
 }
 
 class ComputeInsightsUseCase {
@@ -63,9 +111,13 @@ class ComputeInsightsUseCase {
     }
 
     final perDay = List<int>.filled(7, 0);
+    final wordsPerDay = List<int>.filled(7, 0);
     for (final e in weekEntries) {
       final wd = e.createdAt.weekday - 1;
-      if (wd >= 0 && wd < 7) perDay[wd]++;
+      if (wd >= 0 && wd < 7) {
+        perDay[wd]++;
+        wordsPerDay[wd] += e.wordCount;
+      }
     }
 
     return WeeklyInsight(
@@ -76,7 +128,12 @@ class ComputeInsightsUseCase {
       moodCounts: moodCounts,
       tagCounts: tagCounts,
       entriesPerWeekday: perDay,
+      wordsPerWeekday: wordsPerDay,
     );
+  }
+
+  OverallMoodValence overallMoodValence(List<JournalEntry> all) {
+    return OverallMoodValence.fromEntries(all);
   }
 
   Map<String, int> moodDistributionAll(List<JournalEntry> all) {

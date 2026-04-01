@@ -196,16 +196,24 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your reflections are becoming more consistent.';
 
   @override
-  String get moodRhythm => 'Mood rhythm';
+  String get moodRhythm => 'Weekly writing';
+
+  @override
+  String get writingByDayHint =>
+      'Each column is one day. A taller bar means more entries that day.';
 
   @override
   String get last7Days => 'This week';
 
   @override
-  String get volume => 'Volume';
+  String get volume => 'Words this week';
 
   @override
-  String get avgWordsPerDay => 'Avg words / day';
+  String get avgWordsPerDay => 'Daily average on days you wrote this week';
+
+  @override
+  String get wordsPerDayChartHint =>
+      'Same order as above: each bar is total words you wrote that day.';
 
   @override
   String get words => 'words';
@@ -221,6 +229,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get moodDistribution => 'Mood distribution';
+
+  @override
+  String get moodValenceTitle => 'Your mood average';
+
+  @override
+  String get moodValenceSubtitle =>
+      'Combined from moods you pick on entries (whole archive). Based on those labels, not on analyzing your text.';
+
+  @override
+  String moodValenceScoreOf100(int score) {
+    return '$score/100';
+  }
+
+  @override
+  String moodValenceSample(int count) {
+    return '$count entries include a mood';
+  }
+
+  @override
+  String get moodValenceEmpty => 'No average yet';
+
+  @override
+  String get moodValenceEmptyBody =>
+      'When you choose a mood while writing, a tone summary based on your whole archive will appear here.';
+
+  @override
+  String get moodTonePhraseVeryPositive =>
+      'Your entries tend to feel bright and open.';
+
+  @override
+  String get moodTonePhrasePositive => 'Overall you lean positive and warm.';
+
+  @override
+  String get moodTonePhraseBalanced =>
+      'Your emotional tone looks fairly balanced.';
+
+  @override
+  String get moodTonePhraseDifficult =>
+      'Some entries feel heavier—that’s common and often temporary.';
+
+  @override
+  String get moodTonePhraseHeavy =>
+      'Recent entries carry harder feelings; be gentle with yourself.';
 
   @override
   String get settingsTitle => 'Settings';

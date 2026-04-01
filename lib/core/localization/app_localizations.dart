@@ -443,8 +443,14 @@ abstract class AppLocalizations {
   /// No description provided for @moodRhythm.
   ///
   /// In en, this message translates to:
-  /// **'Mood rhythm'**
+  /// **'Weekly writing'**
   String get moodRhythm;
+
+  /// No description provided for @writingByDayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Each column is one day. A taller bar means more entries that day.'**
+  String get writingByDayHint;
 
   /// No description provided for @last7Days.
   ///
@@ -455,14 +461,20 @@ abstract class AppLocalizations {
   /// No description provided for @volume.
   ///
   /// In en, this message translates to:
-  /// **'Volume'**
+  /// **'Words this week'**
   String get volume;
 
   /// No description provided for @avgWordsPerDay.
   ///
   /// In en, this message translates to:
-  /// **'Avg words / day'**
+  /// **'Daily average on days you wrote this week'**
   String get avgWordsPerDay;
+
+  /// No description provided for @wordsPerDayChartHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Same order as above: each bar is total words you wrote that day.'**
+  String get wordsPerDayChartHint;
 
   /// No description provided for @words.
   ///
@@ -493,6 +505,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mood distribution'**
   String get moodDistribution;
+
+  /// No description provided for @moodValenceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your mood average'**
+  String get moodValenceTitle;
+
+  /// No description provided for @moodValenceSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Combined from moods you pick on entries (whole archive). Based on those labels, not on analyzing your text.'**
+  String get moodValenceSubtitle;
+
+  /// No description provided for @moodValenceScoreOf100.
+  ///
+  /// In en, this message translates to:
+  /// **'{score}/100'**
+  String moodValenceScoreOf100(int score);
+
+  /// No description provided for @moodValenceSample.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} entries include a mood'**
+  String moodValenceSample(int count);
+
+  /// No description provided for @moodValenceEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No average yet'**
+  String get moodValenceEmpty;
+
+  /// No description provided for @moodValenceEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'When you choose a mood while writing, a tone summary based on your whole archive will appear here.'**
+  String get moodValenceEmptyBody;
+
+  /// No description provided for @moodTonePhraseVeryPositive.
+  ///
+  /// In en, this message translates to:
+  /// **'Your entries tend to feel bright and open.'**
+  String get moodTonePhraseVeryPositive;
+
+  /// No description provided for @moodTonePhrasePositive.
+  ///
+  /// In en, this message translates to:
+  /// **'Overall you lean positive and warm.'**
+  String get moodTonePhrasePositive;
+
+  /// No description provided for @moodTonePhraseBalanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Your emotional tone looks fairly balanced.'**
+  String get moodTonePhraseBalanced;
+
+  /// No description provided for @moodTonePhraseDifficult.
+  ///
+  /// In en, this message translates to:
+  /// **'Some entries feel heavier—that’s common and often temporary.'**
+  String get moodTonePhraseDifficult;
+
+  /// No description provided for @moodTonePhraseHeavy.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent entries carry harder feelings; be gentle with yourself.'**
+  String get moodTonePhraseHeavy;
 
   /// No description provided for @settingsTitle.
   ///

@@ -194,16 +194,25 @@ class AppLocalizationsTr extends AppLocalizations {
   String get weeklyConsistency => 'Yansımaların giderek daha tutarlı.';
 
   @override
-  String get moodRhythm => 'Ruh hali ritmi';
+  String get moodRhythm => 'Haftalık yazım';
+
+  @override
+  String get writingByDayHint =>
+      'Her sütun bir gün. Çubuk ne kadar yüksekse o gün o kadar çok kayıt açmışsın.';
 
   @override
   String get last7Days => 'Bu hafta';
 
   @override
-  String get volume => 'Hacim';
+  String get volume => 'Kelime grafiği';
 
   @override
-  String get avgWordsPerDay => 'Günlük ortalama kelime';
+  String get avgWordsPerDay =>
+      'Yazdığın günlere göre bu haftanın günlük ortalaması';
+
+  @override
+  String get wordsPerDayChartHint =>
+      'Üstteki günlerle aynı sıra: her çubuk o gün yazdığın toplam kelime.';
 
   @override
   String get words => 'kelime';
@@ -219,6 +228,49 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get moodDistribution => 'Ruh hali dağılımı';
+
+  @override
+  String get moodValenceTitle => 'Ruh hali ortalaman';
+
+  @override
+  String get moodValenceSubtitle =>
+      'Kayıtlarda seçtiğin ruh hallerinin birleşimi (tüm arşiv). Metin içeriğine göre değil, seçtiğin etiketlere göre hesaplanır.';
+
+  @override
+  String moodValenceScoreOf100(int score) {
+    return '$score/100';
+  }
+
+  @override
+  String moodValenceSample(int count) {
+    return '$count kayıtta ruh hali seçilmiş';
+  }
+
+  @override
+  String get moodValenceEmpty => 'Henüz ortalama yok';
+
+  @override
+  String get moodValenceEmptyBody =>
+      'Yazarken ruh hali seçtiğinde, burada tüm arşivine göre bir ton özeti görünür.';
+
+  @override
+  String get moodTonePhraseVeryPositive =>
+      'Yazıların genelde neşeli ve açık bir tonda.';
+
+  @override
+  String get moodTonePhrasePositive =>
+      'Genelde olumlu ve sıcak bir çizgidesin.';
+
+  @override
+  String get moodTonePhraseBalanced => 'Duygusal olarak dengeli bir görünüm.';
+
+  @override
+  String get moodTonePhraseDifficult =>
+      'Bazı kayıtlar daha ağır; bu normal ve sık geçicidir.';
+
+  @override
+  String get moodTonePhraseHeavy =>
+      'Son kayıtların daha zorlayıcı duygular taşıyor; kendine nazik ol.';
 
   @override
   String get settingsTitle => 'Ayarlar';

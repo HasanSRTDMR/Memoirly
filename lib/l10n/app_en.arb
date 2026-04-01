@@ -67,15 +67,38 @@
     }
   },
   "weeklyConsistency": "Your reflections are becoming more consistent.",
-  "moodRhythm": "Mood rhythm",
+  "moodRhythm": "Weekly writing",
+  "writingByDayHint": "Each column is one day. A taller bar means more entries that day.",
   "last7Days": "This week",
-  "volume": "Volume",
-  "avgWordsPerDay": "Avg words / day",
+  "volume": "Words this week",
+  "avgWordsPerDay": "Daily average on days you wrote this week",
+  "wordsPerDayChartHint": "Same order as above: each bar is total words you wrote that day.",
   "words": "words",
   "themes": "Themes",
   "frequentlyTagged": "Frequently tagged",
   "totalEntries": "Total entries",
   "moodDistribution": "Mood distribution",
+  "moodValenceTitle": "Your mood average",
+  "moodValenceSubtitle": "Combined from moods you pick on entries (whole archive). Based on those labels, not on analyzing your text.",
+  "moodValenceScoreOf100": "{score}/100",
+  "@moodValenceScoreOf100": {
+    "placeholders": {
+      "score": {"type": "int"}
+    }
+  },
+  "moodValenceSample": "{count} entries include a mood",
+  "@moodValenceSample": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "moodValenceEmpty": "No average yet",
+  "moodValenceEmptyBody": "When you choose a mood while writing, a tone summary based on your whole archive will appear here.",
+  "moodTonePhraseVeryPositive": "Your entries tend to feel bright and open.",
+  "moodTonePhrasePositive": "Overall you lean positive and warm.",
+  "moodTonePhraseBalanced": "Your emotional tone looks fairly balanced.",
+  "moodTonePhraseDifficult": "Some entries feel heavier—that’s common and often temporary.",
+  "moodTonePhraseHeavy": "Recent entries carry harder feelings; be gentle with yourself.",
   "settingsTitle": "Settings",
   "settingsSubtitle": "Configure your private sanctuary",
   "security": "Security",
