@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:memoirly/core/navigation/root_navigator_key.dart';
 import 'package:memoirly/features/calendar/presentation/calendar_page.dart';
 import 'package:memoirly/features/home/presentation/home_page.dart';
 import 'package:memoirly/features/insights/presentation/insights_page.dart';
@@ -9,8 +9,6 @@ import 'package:memoirly/features/onboarding/presentation/onboarding_page.dart';
 import 'package:memoirly/features/search/presentation/search_page.dart';
 import 'package:memoirly/features/settings/presentation/settings_page.dart';
 import 'package:memoirly/features/shell/main_shell.dart';
-
-final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 GoRouter createAppRouter({required String initialLocation}) {
   return GoRouter(

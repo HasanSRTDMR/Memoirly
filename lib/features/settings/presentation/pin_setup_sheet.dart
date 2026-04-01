@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
-import 'package:memoirly/core/theme/app_colors.dart';
 
 class PinSetupSheet extends StatefulWidget {
   const PinSetupSheet({super.key});
@@ -49,6 +48,7 @@ class _PinSetupSheetState extends State<PinSetupSheet> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
     return Padding(
       padding: EdgeInsets.only(
         left: 24,
@@ -75,8 +75,8 @@ class _PinSetupSheetState extends State<PinSetupSheet> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: i < _current.length
-                      ? AppColors.primary
-                      : AppColors.primaryContainer,
+                      ? scheme.primary
+                      : scheme.primaryContainer,
                 ),
               ),
             ),
@@ -96,6 +96,7 @@ class _Keypad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final keys = [
       ['1', '2', '3'],
       ['4', '5', '6'],
@@ -116,13 +117,19 @@ class _Keypad extends StatelessWidget {
                 child: k == 'del'
                     ? IconButton(
                         onPressed: () => onKey('del'),
-                        icon: const Icon(Icons.backspace_outlined),
+                        icon: Icon(
+                          Icons.backspace_outlined,
+                          color: scheme.onSurface,
+                        ),
                       )
                     : TextButton(
                         onPressed: () => onKey(k),
                         child: Text(
                           k,
-                          style: const TextStyle(fontSize: 22),
+                          style: TextStyle(
+                            fontSize: 22,
+                            color: scheme.onSurface,
+                          ),
                         ),
                       ),
               );

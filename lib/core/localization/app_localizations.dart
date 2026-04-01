@@ -590,6 +590,42 @@ abstract class AppLocalizations {
   /// **'Export as TXT'**
   String get exportTxt;
 
+  /// No description provided for @importTxt.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from TXT'**
+  String get importTxt;
+
+  /// No description provided for @importTxtSelectFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose file'**
+  String get importTxtSelectFile;
+
+  /// No description provided for @importTxtHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a TXT file exported from Memoirly. Entries will be added to your archive.'**
+  String get importTxtHint;
+
+  /// No description provided for @importTxtError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read or parse this file.'**
+  String get importTxtError;
+
+  /// No description provided for @importTxtEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No entries were found in this file.'**
+  String get importTxtEmpty;
+
+  /// No description provided for @importedEntriesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported {count} entries.'**
+  String importedEntriesCount(int count);
+
   /// No description provided for @resetLocalData.
   ///
   /// In en, this message translates to:
@@ -637,18 +673,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Use biometrics'**
   String get useBiometrics;
-
-  /// No description provided for @forgotPin.
-  ///
-  /// In en, this message translates to:
-  /// **'Forgot PIN'**
-  String get forgotPin;
-
-  /// No description provided for @emergency.
-  ///
-  /// In en, this message translates to:
-  /// **'Emergency'**
-  String get emergency;
 
   /// No description provided for @setPinTitle.
   ///
@@ -895,18 +919,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'User ID'**
   String get userIdLabel;
-
-  /// No description provided for @forgotPinMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'PINs cannot be recovered from the app. To reset access you can clear app storage in Android settings (local journal data will be removed).'**
-  String get forgotPinMessage;
-
-  /// No description provided for @emergencyMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'This app is a private journal. For real emergencies use your device’s emergency or medical features.'**
-  String get emergencyMessage;
 
   /// No description provided for @close.
   ///

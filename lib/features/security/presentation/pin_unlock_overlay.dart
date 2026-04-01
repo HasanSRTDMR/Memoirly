@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:memoirly/core/di/providers.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
-import 'package:memoirly/core/theme/app_colors.dart';
 
 class PinUnlockOverlay extends ConsumerStatefulWidget {
   const PinUnlockOverlay({super.key, required this.child});
@@ -18,34 +16,11 @@ class _PinUnlockOverlayState extends ConsumerState<PinUnlockOverlay>
     with WidgetsBindingObserver {
   String _pin = '';
   String? _error;
-  final _auth = LocalAuthentication();
-
-  Future<void> _showInfoDialog(
-    BuildContext context,
-    String title,
-    String body,
-  ) async {
-    final l = AppLocalizations.of(context);
-    await showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(title),
-        content: SingleChildScrollView(child: Text(body)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l.ok),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _tryBiometric());
   }
 
   @override
@@ -65,21 +40,6 @@ class _PinUnlockOverlayState extends ConsumerState<PinUnlockOverlay>
         _error = null;
       });
     }
-  }
-
-  Future<void> _tryBiometric() async {
-    final sec = ref.read(securityRepositoryProvider);
-    final enabled = await sec.watchBiometricEnabled().first;
-    if (!enabled || !mounted) return;
-    try {
-      final ok = await _auth.authenticate(
-        localizedReason: 'Unlock your journal',
-      );
-      if (ok && mounted) {
-        sec.setSessionUnlocked(true);
-        setState(() {});
-      }
-    } catch (_) {}
   }
 
   void _digit(String d) {
@@ -114,6 +74,7 @@ class _PinUnlockOverlayState extends ConsumerState<PinUnlockOverlay>
   @override
   Widget build(BuildContext context) {
     final sec = ref.watch(securityRepositoryProvider);
+    final scheme = Theme.of(context).colorScheme;
     return StreamBuilder<bool>(
       stream: sec.watchLockEnabled(),
       initialData: false,
@@ -126,7 +87,7 @@ class _PinUnlockOverlayState extends ConsumerState<PinUnlockOverlay>
             if (show)
               Positioned.fill(
                 child: ColoredBox(
-                  color: AppColors.surface.withValues(alpha: 0.98),
+                  color: scheme.surface.withValues(alpha: 0.98),
                   child: SafeArea(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -171,8 +132,8 @@ class _PinUnlockOverlayState extends ConsumerState<PinUnlockOverlay>
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: i < _pin.length
-                                      ? AppColors.primary
-                                      : AppColors.primaryContainer,
+                                      ? scheme.primary
+                                      : scheme.primaryContainer,
                                 ),
                               ),
                             ),
@@ -182,45 +143,12 @@ class _PinUnlockOverlayState extends ConsumerState<PinUnlockOverlay>
                               padding: const EdgeInsets.only(top: 12),
                               child: Text(
                                 _error!,
-                                style: const TextStyle(color: AppColors.error),
+                                style: TextStyle(color: scheme.error),
                               ),
                             ),
                           const SizedBox(height: 28),
                           _PinPad(onDigit: _digit),
-                          const SizedBox(height: 24),
-                          TextButton.icon(
-                            onPressed: _tryBiometric,
-                            icon: const Icon(Icons.face_retouching_natural),
-                            label: Text(
-                              AppLocalizations.of(context).useBiometrics,
-                            ),
-                          ),
                           const Spacer(),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              TextButton(
-                                onPressed: () => _showInfoDialog(
-                                  context,
-                                  AppLocalizations.of(context).forgotPin,
-                                  AppLocalizations.of(context).forgotPinMessage,
-                                ),
-                                child: Text(
-                                  AppLocalizations.of(context).forgotPin,
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () => _showInfoDialog(
-                                  context,
-                                  AppLocalizations.of(context).emergency,
-                                  AppLocalizations.of(context).emergencyMessage,
-                                ),
-                                child: Text(
-                                  AppLocalizations.of(context).emergency,
-                                ),
-                              ),
-                            ],
-                          ),
                         ],
                       ),
                     ),
@@ -241,11 +169,12 @@ class _PinPad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final rows = [
       ['1', '2', '3'],
       ['4', '5', '6'],
       ['7', '8', '9'],
-      ['bio', '0', 'del'],
+      ['', '0', 'del'],
     ];
     return Column(
       children: rows.map((r) {
@@ -254,17 +183,8 @@ class _PinPad extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: r.map((k) {
-              if (k == 'bio') {
-                return SizedBox(
-                  width: 72,
-                  height: 56,
-                  child: Center(
-                    child: Text(
-                      AppLocalizations.of(context).faceId,
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
-                  ),
-                );
+              if (k.isEmpty) {
+                return const SizedBox(width: 72, height: 56);
               }
               return SizedBox(
                 width: 72,
@@ -272,11 +192,20 @@ class _PinPad extends StatelessWidget {
                 child: k == 'del'
                     ? IconButton(
                         onPressed: () => onDigit('del'),
-                        icon: const Icon(Icons.backspace_outlined),
+                        icon: Icon(
+                          Icons.backspace_outlined,
+                          color: scheme.onSurface,
+                        ),
                       )
                     : TextButton(
                         onPressed: () => onDigit(k),
-                        child: Text(k, style: const TextStyle(fontSize: 24)),
+                        child: Text(
+                          k,
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: scheme.onSurface,
+                          ),
+                        ),
                       ),
               );
             }).toList(),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
-import 'package:memoirly/core/theme/app_colors.dart';
 import 'package:memoirly/core/widgets/archive_sheets.dart';
 
 class ArchiveAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -46,7 +45,8 @@ class ArchiveAppBar extends StatelessWidget implements PreferredSizeWidget {
               onPressed: () => ArchiveSheets.showAccount(context, ref),
             ),
           ],
-          backgroundColor: AppColors.surface.withValues(alpha: 0.88),
+          backgroundColor:
+              Theme.of(context).colorScheme.surface.withValues(alpha: 0.88),
         );
       },
     );

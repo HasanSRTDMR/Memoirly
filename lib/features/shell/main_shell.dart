@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
-import 'package:memoirly/core/theme/app_colors.dart';
-
 class MainShell extends StatelessWidget {
   const MainShell({super.key, required this.navigationShell});
 
@@ -26,11 +24,12 @@ class MainShell extends StatelessWidget {
       (icon: Icons.settings_outlined, label: l.settings, index: 4),
     ];
 
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
       extendBody: true,
       body: navigationShell,
       bottomNavigationBar: Material(
-        color: AppColors.surface.withValues(alpha: 0.92),
+        color: scheme.surface.withValues(alpha: 0.92),
         elevation: 0,
         child: SafeArea(
           top: false,
@@ -95,9 +94,10 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final fg = selected
-        ? AppColors.onSurface
-        : AppColors.onSurfaceVariant.withValues(alpha: 0.65);
+        ? scheme.onSurface
+        : scheme.onSurfaceVariant.withValues(alpha: 0.65);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(999),

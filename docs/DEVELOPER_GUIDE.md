@@ -65,6 +65,10 @@ Restrict reads/writes to the authenticated user:
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    match /dailyQuotes/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
     match /users/{userId}/journalEntries/{entryId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
@@ -72,4 +76,31 @@ service cloud.firestore {
 }
 ```
 
+The same text lives in `firestore.rules` at the repo root; deploy with `firebase deploy --only firestore:rules` (after `firebase login` / `firebase use`).
+
 Adjust for your security model (custom claims, etc.).
+
+## Daily quotes (Insights screen) — Firestore data
+
+The app **does not create** these documents. Until you add them, the Insights quote card shows the **in-app fallback** (Emily Dickinson). Nothing appears under `users/…`; quotes live in a **root-level collection**.
+
+### Where in Firebase
+
+1. Open **Firestore Database** in the Firebase console.
+2. **Start collection** (if needed) with collection ID exactly: **`dailyQuotes`** (case-sensitive).
+3. For each calendar day you want a quote, **add a document**:
+   - **Document ID:** the date in **`YYYY-MM-DD`** format using the **same calendar day** users will have on their phone (e.g. `2026-04-01` for 1 April 2026). The app builds this ID from `DateTime.now()` (local date only, no time).
+4. **Fields** (type string):
+
+| Field     | Required | Example |
+|-----------|----------|---------|
+| `textEn`  | yes      | English quote text |
+| `textTr`  | yes      | Turkish quote text |
+| `author`  | no       | e.g. `Emily Dickinson` (shown as `— author`) |
+
+If the document for **today’s** ID is missing, or `textEn` / `textTr` are empty, the app uses the fallback quote.
+
+### Code reference
+
+- Read path: `dailyQuotes/{yyyy-MM-dd}` — see `FirestoreDailyQuoteDatasource` in `lib/data/datasources/firestore_daily_quote_datasource.dart`.
+- UI: `dailyQuoteProvider` in `lib/core/di/providers.dart`, Insights page `lib/features/insights/presentation/insights_page.dart`.

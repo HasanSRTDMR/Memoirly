@@ -9,8 +9,7 @@ abstract class SettingsRepository {
 
   Future<void> setThemeMode(ThemeMode mode);
 
-  /// null = follow system locale
-  Stream<Locale?> watchLocaleOverride();
+  Stream<Locale> watchLocaleOverride();
 
-  Future<void> setLocaleOverride(Locale? locale);
+  Future<void> setLocaleOverride(Locale locale);
 }

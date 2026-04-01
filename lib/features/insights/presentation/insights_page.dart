@@ -6,6 +6,7 @@ import 'package:memoirly/core/localization/app_localizations.dart';
 import 'package:memoirly/core/localization/mood_localizations.dart';
 import 'package:memoirly/core/theme/app_colors.dart';
 import 'package:memoirly/core/widgets/archive_app_bar.dart';
+import 'package:memoirly/domain/entities/daily_quote.dart';
 import 'package:memoirly/domain/entities/journal_entry.dart';
 
 class InsightsPage extends ConsumerWidget {
@@ -32,6 +33,7 @@ class InsightsPage extends ConsumerWidget {
             1,
             (a, b) => b > a ? b : a,
           );
+          final quoteAsync = ref.watch(dailyQuoteProvider);
 
           return LayoutBuilder(
             builder: (context, constraints) {
@@ -204,39 +206,10 @@ class InsightsPage extends ConsumerWidget {
                 ),
               ],
               const SizedBox(height: 28),
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(40),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.03),
-                      blurRadius: 40,
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    const Icon(Icons.format_quote_rounded,
-                        size: 36, color: AppColors.outlineVariant),
-                    const SizedBox(height: 12),
-                    Text(
-                      '"The soul should always stand ajar, ready to welcome the ecstatic experience."',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontFamily: 'Newsreader',
-                            fontStyle: FontStyle.italic,
-                            fontSize: 20,
-                          ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      '— Emily Dickinson',
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
-                  ],
-                ),
+              quoteAsync.when(
+                loading: () => const _DailyQuoteCard.loading(),
+                error: (_, __) => _DailyQuoteCard(quote: DailyQuote.fallback),
+                data: (q) => _DailyQuoteCard(quote: q),
               ),
             ],
               );
@@ -258,6 +231,75 @@ class InsightsPage extends ConsumerWidget {
     final list = m.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     return list.take(8).toList();
+  }
+}
+
+class _DailyQuoteCard extends StatelessWidget {
+  const _DailyQuoteCard({required this.quote});
+
+  const _DailyQuoteCard.loading() : quote = null;
+
+  final DailyQuote? quote;
+
+  bool get _isLoading => quote == null;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(40),
+        boxShadow: [
+          BoxShadow(
+            color: scheme.shadow.withValues(alpha: 0.08),
+            blurRadius: 40,
+            offset: const Offset(0, 12),
+          ),
+        ],
+      ),
+      child: _isLoading
+          ? SizedBox(
+              height: 120,
+              child: Center(
+                child: SizedBox(
+                  width: 28,
+                  height: 28,
+                  child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+                ),
+              ),
+            )
+          : Column(
+              children: [
+                Icon(
+                  Icons.format_quote_rounded,
+                  size: 36,
+                  color: scheme.outlineVariant,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  '"${quote!.textForLocale(Localizations.localeOf(context))}"',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontFamily: 'Newsreader',
+                        fontStyle: FontStyle.italic,
+                        fontSize: 20,
+                        color: scheme.onSurface,
+                      ),
+                ),
+                if (quote!.author != null && quote!.author!.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    '— ${quote!.author}',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                  ),
+                ],
+              ],
+            ),
+    );
   }
 }
 

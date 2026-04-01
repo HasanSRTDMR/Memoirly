@@ -92,6 +92,17 @@
   "languageTurkish": "Türkçe",
   "dataManagement": "Data management",
   "exportTxt": "Export as TXT",
+  "importTxt": "Import from TXT",
+  "importTxtSelectFile": "Choose file",
+  "importTxtHint": "Choose a TXT file exported from Memoirly. Entries will be added to your archive.",
+  "importTxtError": "Could not read or parse this file.",
+  "importTxtEmpty": "No entries were found in this file.",
+  "importedEntriesCount": "Imported {count} entries.",
+  "@importedEntriesCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
   "resetLocalData": "Reset local data",
   "resetLocalDataConfirm": "Remove all journal entries stored on this device? This cannot be undone.",
   "privacyFirst": "Privacy first",
@@ -105,8 +116,6 @@
   "welcomeBack": "Welcome back",
   "enterPin": "Enter passcode to unlock your thoughts",
   "useBiometrics": "Use biometrics",
-  "forgotPin": "Forgot PIN",
-  "emergency": "Emergency",
   "setPinTitle": "Create PIN",
   "confirmPinTitle": "Confirm PIN",
   "pinsDoNotMatch": "PINs do not match",
@@ -153,7 +162,5 @@
   "anonymousSessionCloud": "Signed in anonymously. Entries sync to Firebase for this user.",
   "anonymousSessionLocal": "Local mode: entries stay on this device only.",
   "userIdLabel": "User ID",
-  "forgotPinMessage": "PINs cannot be recovered from the app. To reset access you can clear app storage in Android settings (local journal data will be removed).",
-  "emergencyMessage": "This app is a private journal. For real emergencies use your device’s emergency or medical features.",
   "close": "Close"
 }

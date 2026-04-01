@@ -8,15 +8,29 @@ ThemeData buildAppTheme(Brightness brightness) {
     brightness: brightness,
     primary: isDark ? const Color(0xFFBFC0BF) : AppColors.primary,
     onPrimary: isDark ? const Color(0xFF1C1C1C) : AppColors.onPrimary,
+    primaryContainer:
+        isDark ? const Color(0xFF2E3230) : AppColors.primaryContainer,
+    onPrimaryContainer:
+        isDark ? const Color(0xFFD5D6D5) : AppColors.primaryDim,
     secondary: isDark ? const Color(0xFF9CA382) : AppColors.secondary,
     onSecondary: isDark ? const Color(0xFF1A1C14) : AppColors.onSecondary,
+    secondaryContainer:
+        isDark ? const Color(0xFF343B2E) : AppColors.secondaryContainer,
+    onSecondaryContainer:
+        isDark ? const Color(0xFFDDE4C8) : AppColors.onSecondaryContainer,
     error: AppColors.error,
     onError: Colors.white,
     surface: isDark ? const Color(0xFF121412) : AppColors.surface,
     onSurface: isDark ? const Color(0xFFE2E6E4) : AppColors.onSurface,
+    onSurfaceVariant:
+        isDark ? const Color(0xFF9DA39F) : AppColors.onSurfaceVariant,
     surfaceContainerHighest:
         isDark ? const Color(0xFF2A2F2D) : AppColors.surfaceContainerHighest,
+    surfaceContainerLowest:
+        isDark ? const Color(0xFF0D0F0E) : AppColors.surfaceContainerLowest,
     outline: isDark ? const Color(0xFF5C6360) : AppColors.outlineVariant,
+    outlineVariant:
+        isDark ? const Color(0xFF3D4441) : AppColors.outlineVariant,
     surfaceContainerLow:
         isDark ? const Color(0xFF1E221F) : AppColors.surfaceContainerLow,
     surfaceContainerHigh:
@@ -57,18 +71,19 @@ ThemeData buildAppTheme(Brightness brightness) {
     bodyMedium: GoogleFonts.newsreader(
       fontSize: 18,
       height: 1.6,
-      color: AppColors.onSurfaceVariant,
+      color: base.onSurfaceVariant,
     ),
     labelLarge: GoogleFonts.manrope(
       fontSize: 14,
       fontWeight: FontWeight.w700,
       letterSpacing: 1.2,
+      color: base.onSurface,
     ),
     labelSmall: GoogleFonts.manrope(
       fontSize: 10,
       fontWeight: FontWeight.w800,
       letterSpacing: 2,
-      color: AppColors.onSurfaceVariant,
+      color: base.onSurfaceVariant,
     ),
   );
 
@@ -89,14 +104,14 @@ ThemeData buildAppTheme(Brightness brightness) {
       ),
     ),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: AppColors.secondary,
-      foregroundColor: AppColors.onSecondary,
+      backgroundColor: base.secondary,
+      foregroundColor: base.onSecondary,
       elevation: 8,
       shape: const CircleBorder(),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: AppColors.surfaceContainerLow,
+      fillColor: base.surfaceContainerLow,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide.none,

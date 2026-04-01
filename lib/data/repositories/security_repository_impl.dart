@@ -7,7 +7,6 @@ import 'package:memoirly/domain/repositories/security_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const _kLockEnabled = 'memoirly_lock_enabled';
-const _kBioEnabled = 'memoirly_bio_enabled';
 const _kPinHashKey = 'memoirly_pin_hash_v1';
 
 class SecurityRepositoryImpl implements SecurityRepository {
@@ -17,7 +16,6 @@ class SecurityRepositoryImpl implements SecurityRepository {
   final FlutterSecureStorage _secure;
 
   final _lock = StreamController<bool>.broadcast();
-  final _bio = StreamController<bool>.broadcast();
 
   bool _sessionUnlocked = false;
 
@@ -40,18 +38,6 @@ class SecurityRepositoryImpl implements SecurityRepository {
     await _prefs.setBool(_kLockEnabled, enabled);
     if (!enabled) _sessionUnlocked = true;
     _lock.add(enabled);
-  }
-
-  @override
-  Stream<bool> watchBiometricEnabled() async* {
-    yield _prefs.getBool(_kBioEnabled) ?? false;
-    yield* _bio.stream;
-  }
-
-  @override
-  Future<void> setBiometricEnabled(bool enabled) async {
-    await _prefs.setBool(_kBioEnabled, enabled);
-    _bio.add(enabled);
   }
 
   String _hash(String pin) =>

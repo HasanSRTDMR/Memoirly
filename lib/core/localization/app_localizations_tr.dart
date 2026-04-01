@@ -269,6 +269,27 @@ class AppLocalizationsTr extends AppLocalizations {
   String get exportTxt => 'TXT olarak dışa aktar';
 
   @override
+  String get importTxt => 'TXT\'den içe aktar';
+
+  @override
+  String get importTxtSelectFile => 'Dosya seç';
+
+  @override
+  String get importTxtHint =>
+      'Memoirly\'den dışa aktardığınız bir TXT dosyası seçin. Kayıtlar arşivinize eklenir.';
+
+  @override
+  String get importTxtError => 'Dosya okunamadı veya tanınmadı.';
+
+  @override
+  String get importTxtEmpty => 'Bu dosyada kayıt bulunamadı.';
+
+  @override
+  String importedEntriesCount(int count) {
+    return '$count kayıt içe aktarıldı.';
+  }
+
+  @override
   String get resetLocalData => 'Yerel veriyi sıfırla';
 
   @override
@@ -295,12 +316,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get useBiometrics => 'Biyometri kullan';
-
-  @override
-  String get forgotPin => 'PIN unuttum';
-
-  @override
-  String get emergency => 'Acil';
 
   @override
   String get setPinTitle => 'PIN oluştur';
@@ -432,14 +447,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get userIdLabel => 'Kullanıcı kimliği';
-
-  @override
-  String get forgotPinMessage =>
-      'PIN uygulama içinden kurtarılamaz. Erişimi sıfırlamak için Android ayarlarından uygulama verilerini temizleyebilirsiniz (yerel günlük silinir).';
-
-  @override
-  String get emergencyMessage =>
-      'Bu uygulama özel bir günlüktür. Gerçek acil durumlarda cihazınızın acil yardım özelliklerini kullanın.';
 
   @override
   String get close => 'Kapat';

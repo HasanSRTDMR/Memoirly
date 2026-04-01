@@ -82,6 +82,17 @@
   "languageTurkish": "Türkçe",
   "dataManagement": "Veri yönetimi",
   "exportTxt": "TXT olarak dışa aktar",
+  "importTxt": "TXT'den içe aktar",
+  "importTxtSelectFile": "Dosya seç",
+  "importTxtHint": "Memoirly'den dışa aktardığınız bir TXT dosyası seçin. Kayıtlar arşivinize eklenir.",
+  "importTxtError": "Dosya okunamadı veya tanınmadı.",
+  "importTxtEmpty": "Bu dosyada kayıt bulunamadı.",
+  "importedEntriesCount": "{count} kayıt içe aktarıldı.",
+  "@importedEntriesCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
   "resetLocalData": "Yerel veriyi sıfırla",
   "resetLocalDataConfirm": "Bu cihazdaki tüm günlük kayıtları silinsin mi? Geri alınamaz.",
   "privacyFirst": "Gizlilik öncelikli",
@@ -90,8 +101,6 @@
   "welcomeBack": "Tekrar hoş geldin",
   "enterPin": "Düşüncelerinin kilidini açmak için PIN gir",
   "useBiometrics": "Biyometri kullan",
-  "forgotPin": "PIN unuttum",
-  "emergency": "Acil",
   "setPinTitle": "PIN oluştur",
   "confirmPinTitle": "PIN doğrula",
   "pinsDoNotMatch": "PIN'ler eşleşmiyor",
@@ -133,7 +142,5 @@
   "anonymousSessionCloud": "Anonim oturum. Kayıtlar bu kullanıcı için Firebase ile senkronize edilir.",
   "anonymousSessionLocal": "Yerel mod: veriler yalnızca bu cihazda kalır.",
   "userIdLabel": "Kullanıcı kimliği",
-  "forgotPinMessage": "PIN uygulama içinden kurtarılamaz. Erişimi sıfırlamak için Android ayarlarından uygulama verilerini temizleyebilirsiniz (yerel günlük silinir).",
-  "emergencyMessage": "Bu uygulama özel bir günlüktür. Gerçek acil durumlarda cihazınızın acil yardım özelliklerini kullanın.",
   "close": "Kapat"
 }

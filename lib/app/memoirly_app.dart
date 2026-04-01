@@ -1,3 +1,5 @@
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -7,6 +9,11 @@ import 'package:memoirly/core/di/providers.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
 import 'package:memoirly/core/theme/app_theme.dart';
 import 'package:memoirly/features/security/presentation/pin_unlock_overlay.dart';
+
+Locale _memoirlyLocaleFallback() {
+  final lang = PlatformDispatcher.instance.locale.languageCode;
+  return lang == 'tr' ? const Locale('tr') : const Locale('en');
+}
 
 class MemoirlyApp extends ConsumerWidget {
   const MemoirlyApp({super.key, required this.router});
@@ -21,15 +28,14 @@ class MemoirlyApp extends ConsumerWidget {
       stream: settings.watchThemeMode(),
       initialData: ThemeMode.system,
       builder: (context, themeSnap) {
-        return StreamBuilder<Locale?>(
+        return StreamBuilder<Locale>(
           stream: settings.watchLocaleOverride(),
-          initialData: null,
           builder: (context, localeSnap) {
             final mode = themeSnap.data ?? ThemeMode.system;
             return MaterialApp.router(
               debugShowCheckedModeBanner: false,
               routerConfig: router,
-              locale: localeSnap.data,
+              locale: localeSnap.data ?? _memoirlyLocaleFallback(),
               supportedLocales: AppLocalizations.supportedLocales,
               localizationsDelegates: const [
                 AppLocalizations.delegate,

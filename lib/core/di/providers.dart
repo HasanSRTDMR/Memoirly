@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:memoirly/core/config/app_backend.dart';
+import 'package:memoirly/data/datasources/firestore_daily_quote_datasource.dart';
+import 'package:memoirly/domain/entities/daily_quote.dart';
 import 'package:memoirly/domain/entities/journal_entry.dart';
 import 'package:memoirly/domain/repositories/auth_repository.dart';
 import 'package:memoirly/domain/repositories/journal_repository.dart';
@@ -64,4 +68,14 @@ final journalEntriesStreamProvider =
 final entryByIdProvider =
     FutureProvider.family<JournalEntry?, String>((ref, id) async {
   return ref.read(journalRepositoryProvider).getById(id);
+});
+
+/// Quote of the day from Firestore `dailyQuotes/{yyyy-MM-dd}` (local date).
+/// Uses [DailyQuote.fallback] when Firebase is off, offline, or doc missing.
+final dailyQuoteProvider = FutureProvider.autoDispose<DailyQuote>((ref) async {
+  if (Firebase.apps.isEmpty) {
+    return DailyQuote.fallback;
+  }
+  final ds = FirestoreDailyQuoteDatasource(FirebaseFirestore.instance);
+  return ds.fetchQuoteForToday();
 });

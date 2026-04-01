@@ -3,10 +3,6 @@ abstract class SecurityRepository {
 
   Future<void> setLockEnabled(bool enabled);
 
-  Stream<bool> watchBiometricEnabled();
-
-  Future<void> setBiometricEnabled(bool enabled);
-
   Future<bool> hasPin();
 
   Future<void> setPin(String pin);

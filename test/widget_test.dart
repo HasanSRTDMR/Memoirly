@@ -25,16 +25,10 @@ class _NoopSecurityRepo implements SecurityRepository {
   void setSessionUnlocked(bool unlocked) {}
 
   @override
-  Future<void> setBiometricEnabled(bool enabled) async {}
-
-  @override
   Future<void> setLockEnabled(bool enabled) async {}
 
   @override
   Future<void> setPin(String pin) async {}
-
-  @override
-  Stream<bool> watchBiometricEnabled() => Stream.value(false);
 
   @override
   Stream<bool> watchLockEnabled() => Stream.value(false);

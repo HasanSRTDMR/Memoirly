@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui' show PlatformDispatcher;
 
 import 'package:flutter/material.dart';
 import 'package:memoirly/domain/repositories/settings_repository.dart';
@@ -15,7 +16,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
 
   final _onboarding = StreamController<bool>.broadcast();
   final _theme = StreamController<ThemeMode>.broadcast();
-  final _locale = StreamController<Locale?>.broadcast();
+  final _locale = StreamController<Locale>.broadcast();
 
   @override
   Stream<bool> watchOnboardingCompleted() async* {
@@ -58,33 +59,38 @@ class SettingsRepositoryImpl implements SettingsRepository {
     _theme.add(mode);
   }
 
-  Locale? _readLocale() {
+  Locale _defaultLocale() {
+    final lang = PlatformDispatcher.instance.locale.languageCode;
+    return lang == 'tr' ? const Locale('tr') : const Locale('en');
+  }
+
+  Locale _readLocale() {
     final code = _prefs.getString(_kLocale);
-    if (code == null || code.isEmpty) return null;
+    if (code == null || code.isEmpty) return _defaultLocale();
     if (code.contains('_')) {
       final parts = code.split('_');
       return Locale(parts[0], parts[1]);
     }
-    return Locale(code);
+    final loc = Locale(code);
+    if (loc.languageCode == 'tr' || loc.languageCode == 'en') {
+      return Locale(loc.languageCode);
+    }
+    return _defaultLocale();
   }
 
   @override
-  Stream<Locale?> watchLocaleOverride() async* {
+  Stream<Locale> watchLocaleOverride() async* {
     yield _readLocale();
     yield* _locale.stream;
   }
 
   @override
-  Future<void> setLocaleOverride(Locale? locale) async {
-    if (locale == null) {
-      await _prefs.remove(_kLocale);
-    } else {
-      final code =
-          locale.countryCode != null && locale.countryCode!.isNotEmpty
-              ? '${locale.languageCode}_${locale.countryCode}'
-              : locale.languageCode;
-      await _prefs.setString(_kLocale, code);
-    }
+  Future<void> setLocaleOverride(Locale locale) async {
+    final code =
+        locale.countryCode != null && locale.countryCode!.isNotEmpty
+            ? '${locale.languageCode}_${locale.countryCode}'
+            : locale.languageCode;
+    await _prefs.setString(_kLocale, code);
     _locale.add(locale);
   }
 }

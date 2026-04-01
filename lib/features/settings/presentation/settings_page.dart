@@ -1,11 +1,20 @@
+import 'dart:convert';
+import 'dart:ui' show PlatformDispatcher;
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:memoirly/core/di/providers.dart';
+import 'package:memoirly/core/import_export/journal_txt_codec.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
-import 'package:memoirly/core/theme/app_colors.dart';
 import 'package:memoirly/core/widgets/archive_app_bar.dart';
 import 'package:memoirly/features/settings/presentation/pin_setup_sheet.dart';
 import 'package:share_plus/share_plus.dart';
+
+Locale _settingsLocaleFallback() {
+  final lang = PlatformDispatcher.instance.locale.languageCode;
+  return lang == 'tr' ? const Locale('tr') : const Locale('en');
+}
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -62,20 +71,6 @@ class SettingsPage extends ConsumerWidget {
               );
             },
           ),
-          StreamBuilder<bool>(
-            stream: security.watchBiometricEnabled(),
-            builder: (context, snap) {
-              final on = snap.data ?? false;
-              return _SettingsTile(
-                title: l.biometricAuth,
-                subtitle: l.biometricAuthDesc,
-                trailing: Switch(
-                  value: on,
-                  onChanged: (v) => security.setBiometricEnabled(v),
-                ),
-              );
-            },
-          ),
           const SizedBox(height: 28),
           _SectionTitle(icon: Icons.palette_outlined, title: l.appearance),
           const SizedBox(height: 12),
@@ -109,32 +104,33 @@ class SettingsPage extends ConsumerWidget {
           const SizedBox(height: 28),
           _SectionTitle(icon: Icons.language_rounded, title: l.language),
           const SizedBox(height: 12),
-          StreamBuilder<Locale?>(
+          StreamBuilder<Locale>(
             stream: settings.watchLocaleOverride(),
             builder: (context, snap) {
-              final loc = snap.data;
+              final loc = snap.data ?? _settingsLocaleFallback();
               return Column(
                 children: [
                   ListTile(
-                    title: Text(l.languageSystem),
-                    trailing: loc == null
-                        ? const Icon(Icons.check_rounded, color: AppColors.primary)
-                        : null,
-                    onTap: () => settings.setLocaleOverride(null),
-                  ),
-                  ListTile(
                     title: Text(l.languageEnglish),
-                    trailing: loc?.languageCode == 'en'
-                        ? const Icon(Icons.check_rounded, color: AppColors.primary)
+                    trailing: loc.languageCode == 'en'
+                        ? Icon(
+                            Icons.check_rounded,
+                            color: Theme.of(context).colorScheme.primary,
+                          )
                         : null,
-                    onTap: () => settings.setLocaleOverride(const Locale('en')),
+                    onTap: () =>
+                        settings.setLocaleOverride(const Locale('en')),
                   ),
                   ListTile(
                     title: Text(l.languageTurkish),
-                    trailing: loc?.languageCode == 'tr'
-                        ? const Icon(Icons.check_rounded, color: AppColors.primary)
+                    trailing: loc.languageCode == 'tr'
+                        ? Icon(
+                            Icons.check_rounded,
+                            color: Theme.of(context).colorScheme.primary,
+                          )
                         : null,
-                    onTap: () => settings.setLocaleOverride(const Locale('tr')),
+                    onTap: () =>
+                        settings.setLocaleOverride(const Locale('tr')),
                   ),
                 ],
               );
@@ -149,15 +145,75 @@ class SettingsPage extends ConsumerWidget {
             onTap: () async {
               final entries =
                   await ref.read(journalRepositoryProvider).watchEntries().first;
-              final buffer = StringBuffer();
-              for (final e in entries) {
-                buffer.writeln('---');
-                buffer.writeln(e.title);
-                buffer.writeln(e.createdAt.toIso8601String());
-                buffer.writeln(e.content);
-                buffer.writeln();
+              final txt = JournalTxtCodec.exportEntries(entries);
+              await Share.share(txt, subject: l.appTitle);
+            },
+          ),
+          _SettingsNavTile(
+            icon: Icons.upload_file_outlined,
+            title: l.importTxt,
+            onTap: () async {
+              final go = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: Text(l.importTxt),
+                  content: Text(l.importTxtHint),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: Text(l.cancel),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: Text(l.importTxtSelectFile),
+                    ),
+                  ],
+                ),
+              );
+              if (go != true || !context.mounted) return;
+              final result = await FilePicker.platform.pickFiles(
+                type: FileType.custom,
+                allowedExtensions: ['txt'],
+                withData: true,
+              );
+              if (!context.mounted) return;
+              if (result == null || result.files.isEmpty) return;
+              final bytes = result.files.single.bytes;
+              if (bytes == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(l.importTxtError)),
+                );
+                return;
               }
-              await Share.share(buffer.toString(), subject: l.appTitle);
+              final text = utf8.decode(bytes, allowMalformed: true);
+              final uid = await ref.read(authRepositoryProvider).getCurrentUserId();
+              if (uid == null || uid.isEmpty) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l.errorGeneric)),
+                  );
+                }
+                return;
+              }
+              final parsed = JournalTxtCodec.parseForImport(text, uid);
+              if (parsed.isEmpty) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(l.importTxtEmpty)),
+                  );
+                }
+                return;
+              }
+              for (final e in parsed) {
+                await ref.read(journalRepositoryProvider).create(e);
+              }
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l.importedEntriesCount(parsed.length)),
+                  ),
+                );
+              }
             },
           ),
           _SettingsNavTile(
@@ -194,9 +250,13 @@ class SettingsPage extends ConsumerWidget {
           const SizedBox(height: 32),
           Center(
             child: Chip(
-              avatar: const Icon(Icons.verified_user_rounded, size: 18),
+              avatar: Icon(
+                Icons.verified_user_rounded,
+                size: 18,
+                color: Theme.of(context).colorScheme.onSecondaryContainer,
+              ),
               label: Text(l.privacyFirst),
-              backgroundColor: AppColors.secondaryContainer,
+              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
               side: BorderSide.none,
             ),
           ),
@@ -230,7 +290,7 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, color: AppColors.primary, size: 22),
+        Icon(icon, color: Theme.of(context).colorScheme.primary, size: 22),
         const SizedBox(width: 10),
         Text(
           title.toUpperCase(),
@@ -254,10 +314,11 @@ class _SettingsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: 2),
       decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLow,
+        color: scheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(22),
       ),
       child: ListTile(
@@ -288,16 +349,17 @@ class _SettingsNavTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: 2),
       decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLow,
+        color: scheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(22),
       ),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: AppColors.secondaryContainer,
-          child: Icon(icon, size: 20),
+          backgroundColor: scheme.secondaryContainer,
+          child: Icon(icon, size: 20, color: scheme.onSecondaryContainer),
         ),
         title: Text(title),
         trailing: const Icon(Icons.chevron_right_rounded),
@@ -322,16 +384,17 @@ class _ThemeChoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(24),
       child: Container(
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: AppColors.surfaceContainerLowest,
+          color: scheme.surfaceContainerLowest,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: selected ? AppColors.primary : Colors.transparent,
+            color: selected ? scheme.primary : Colors.transparent,
             width: 2,
           ),
         ),
@@ -342,10 +405,10 @@ class _ThemeChoice extends StatelessWidget {
               aspectRatio: 16 / 9,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: darkPreview ? const Color(0xFF1C1C1C) : AppColors.surface,
+                  color: darkPreview ? const Color(0xFF1C1C1C) : scheme.surface,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: AppColors.outlineVariant.withValues(alpha: 0.2),
+                    color: scheme.outlineVariant.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Center(
@@ -355,7 +418,7 @@ class _ThemeChoice extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: darkPreview
                           ? const Color(0xFF444444)
-                          : AppColors.primary.withValues(alpha: 0.12),
+                          : scheme.primary.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -368,8 +431,7 @@ class _ThemeChoice extends StatelessWidget {
               children: [
                 Text(title, style: Theme.of(context).textTheme.titleMedium),
                 if (selected)
-                  const Icon(Icons.check_circle_rounded,
-                      color: AppColors.primary),
+                  Icon(Icons.check_circle_rounded, color: scheme.primary),
               ],
             ),
           ],

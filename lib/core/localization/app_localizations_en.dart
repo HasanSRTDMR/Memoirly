@@ -271,6 +271,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportTxt => 'Export as TXT';
 
   @override
+  String get importTxt => 'Import from TXT';
+
+  @override
+  String get importTxtSelectFile => 'Choose file';
+
+  @override
+  String get importTxtHint =>
+      'Choose a TXT file exported from Memoirly. Entries will be added to your archive.';
+
+  @override
+  String get importTxtError => 'Could not read or parse this file.';
+
+  @override
+  String get importTxtEmpty => 'No entries were found in this file.';
+
+  @override
+  String importedEntriesCount(int count) {
+    return 'Imported $count entries.';
+  }
+
+  @override
   String get resetLocalData => 'Reset local data';
 
   @override
@@ -297,12 +318,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get useBiometrics => 'Use biometrics';
-
-  @override
-  String get forgotPin => 'Forgot PIN';
-
-  @override
-  String get emergency => 'Emergency';
 
   @override
   String get setPinTitle => 'Create PIN';
@@ -434,14 +449,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get userIdLabel => 'User ID';
-
-  @override
-  String get forgotPinMessage =>
-      'PINs cannot be recovered from the app. To reset access you can clear app storage in Android settings (local journal data will be removed).';
-
-  @override
-  String get emergencyMessage =>
-      'This app is a private journal. For real emergencies use your device’s emergency or medical features.';
 
   @override
   String get close => 'Close';
