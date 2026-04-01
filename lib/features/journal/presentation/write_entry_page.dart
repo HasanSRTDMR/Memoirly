@@ -44,6 +44,9 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
   final List<String> _imagePaths = [];
   int? _contentColorArgb;
 
+  /// Extra scroll padding so the body field stays above the bottom composer.
+  static const double _composerScrollReserve = 200;
+
   static const List<int?> _inkArgbChoices = [
     null,
     0xFF2D3432,
@@ -408,8 +411,9 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
     final header = DateFormat.yMMMMd(locale).format(now);
     final sub = DateFormat.EEEE(locale).format(now);
 
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
-    final bottomPad = 320.0 + bottomInset;
+    final viewPaddingBottom = MediaQuery.paddingOf(context).bottom;
+    /// Reserve space when scrolling focused fields (legacy overlay height).
+    final fieldScrollPadBottom = 24.0 + viewPaddingBottom;
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final onSurface = cs.onSurface;
@@ -514,11 +518,13 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
             ),
           ],
         ),
-        body: Stack(
+        body: Column(
           children: [
-            ListView(
-              padding: EdgeInsets.fromLTRB(24, 16, 24, bottomPad),
-              children: [
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                children: [
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
@@ -637,6 +643,9 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                 TextField(
                   controller: _title,
                   cursorColor: onSurface,
+                  scrollPadding: EdgeInsets.only(
+                    bottom: fieldScrollPadBottom + _composerScrollReserve,
+                  ),
                   decoration: InputDecoration(
                     hintText: l.titleHint,
                     border: InputBorder.none,
@@ -651,6 +660,9 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                   minLines: 12,
                   keyboardType: TextInputType.multiline,
                   cursorColor: bodyInkColor,
+                  scrollPadding: EdgeInsets.only(
+                    bottom: fieldScrollPadBottom + _composerScrollReserve,
+                  ),
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     filled: false,
@@ -662,19 +674,16 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                     color: bodyInkColor,
                   ),
                 ),
-              ],
+                ],
+              ),
             ),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Material(
+            Material(
                 color: AppColors.surfaceContainerLow.withValues(alpha: 0.96),
                 elevation: 12,
                 child: SafeArea(
                   top: false,
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(16, 12, 16, 12 + bottomInset),
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
                         color: AppColors.surfaceContainerLow,
@@ -776,6 +785,7 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                             TextField(
                               controller: _tags,
                               cursorColor: onSurface,
+                              scrollPadding: const EdgeInsets.only(bottom: 8),
                               decoration: InputDecoration(
                                 prefixIcon: const Icon(
                                   Icons.sell_outlined,
@@ -818,7 +828,6 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                   ),
                 ),
               ),
-            ),
           ],
         ),
       ),
