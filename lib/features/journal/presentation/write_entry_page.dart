@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:memoirly/core/constants/entry_list_emoji.dart';
 import 'package:memoirly/core/constants/mood_keys.dart';
 import 'package:memoirly/core/di/providers.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
@@ -43,6 +44,8 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
   Completer<bool>? _persistCoalescer;
   final List<String> _imagePaths = [];
   int? _contentColorArgb;
+  /// Ana sayfa emoji seçimi; null veya eski ikon anahtarı = Otomatik (ruh hâli).
+  String? _cardEmoji;
 
   /// Extra scroll padding so the body field stays above the bottom composer.
   static const double _composerScrollReserve = 200;
@@ -299,10 +302,15 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
         tags: tags,
         imagePaths: List<String>.from(_imagePaths),
         contentColorArgb: _contentColorArgb,
+        cardEmoji: _cardEmoji,
       );
 
       // Repository `update` is upsert-safe (Firestore merge-set, local list upsert).
       await ref.read(updateEntryUseCaseProvider).call(entry);
+
+      // So detail screen and the next open of this editor see fresh data, not a
+      // cached [entryByIdProvider] result from before the save.
+      ref.invalidate(entryByIdProvider(id));
 
       if (mounted) {
         setState(() => _lastSavedAt = DateTime.now());
@@ -385,6 +393,7 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                   ..clear()
                   ..addAll(e.imagePaths);
                 _contentColorArgb = e.contentColorArgb;
+                _cardEmoji = e.cardEmoji;
                 _hydrated = true;
               });
             });
@@ -428,6 +437,7 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
         ? Color(_contentColorArgb!)
         : onSurface;
     final parsedTags = _parseTags(_tags.text);
+    final archiveListAutoSelected = !isPickedArchiveListEmoji(_cardEmoji);
 
     Widget? status;
     if (_persistInFlight) {
@@ -634,6 +644,96 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                               ),
                             );
                           }).toList(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      l.archiveListIcon,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() => _cardEmoji = null);
+                                  _scheduleDebouncedSave();
+                                },
+                                borderRadius: BorderRadius.circular(999),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(999),
+                                    border: Border.all(
+                                      color: archiveListAutoSelected
+                                          ? cs.primary
+                                          : AppColors.outlineVariant
+                                              .withValues(alpha: 0.5),
+                                      width: archiveListAutoSelected ? 2 : 1,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    l.archiveListIconAuto,
+                                    style: theme.textTheme.labelSmall?.copyWith(
+                                      color: archiveListAutoSelected
+                                          ? cs.primary
+                                          : cs.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            for (final emoji in kArchiveListEmojiChoices)
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() => _cardEmoji = emoji);
+                                    _scheduleDebouncedSave();
+                                  },
+                                  customBorder: const CircleBorder(),
+                                  child: Container(
+                                    width: 38,
+                                    height: 38,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: _cardEmoji == emoji
+                                            ? cs.primary
+                                            : AppColors.outlineVariant
+                                                .withValues(alpha: 0.5),
+                                        width: _cardEmoji == emoji ? 2 : 1,
+                                      ),
+                                    ),
+                                    child: themedArchiveListEmoji(
+                                      emoji,
+                                      color: archiveEmojiModulateColor(
+                                        cs,
+                                        emphasized: _cardEmoji == emoji,
+                                      ),
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
                     ),

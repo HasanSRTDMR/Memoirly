@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:memoirly/core/constants/entry_list_emoji.dart';
 import 'package:memoirly/core/constants/mood_keys.dart';
 import 'package:memoirly/core/di/providers.dart';
 import 'package:memoirly/core/error/journal_stream_error.dart'
@@ -267,9 +268,12 @@ class _RecentEntryTile extends StatelessWidget {
           children: [
             Column(
               children: [
-                Text(
-                  _emojiFor(entry),
-                  style: const TextStyle(fontSize: 22),
+                themedArchiveListLeading(
+                  entry,
+                  color: archiveEmojiModulateColor(
+                    Theme.of(context).colorScheme,
+                  ),
+                  size: 22,
                 ),
                 const SizedBox(height: 6),
                 Container(
@@ -346,18 +350,4 @@ class _RecentEntryTile extends StatelessWidget {
       ),
     );
   }
-}
-
-String _emojiFor(JournalEntry e) {
-  final m = e.mood;
-  if (m == null) return '📔';
-  const map = {
-    'peaceful': '🌿',
-    'grateful': '🙏',
-    'anxious': '😰',
-    'productive': '⚡',
-    'reflective': '💭',
-    'serene': '🌙',
-  };
-  return map[m] ?? '📓';
 }

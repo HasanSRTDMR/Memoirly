@@ -326,6 +326,18 @@ abstract class AppLocalizations {
   /// **'Default'**
   String get textColorDefault;
 
+  /// No description provided for @archiveListIcon.
+  ///
+  /// In en, this message translates to:
+  /// **'Home icon'**
+  String get archiveListIcon;
+
+  /// No description provided for @archiveListIconAuto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get archiveListIconAuto;
+
   /// No description provided for @entryDetail.
   ///
   /// In en, this message translates to:

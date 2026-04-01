@@ -111,6 +111,7 @@ class EntryDetailPage extends ConsumerWidget {
                   );
                   if (ok == true && context.mounted) {
                     await ref.read(deleteEntryUseCaseProvider).call(entry.id);
+                    ref.invalidate(entryByIdProvider(entry.id));
                     if (context.mounted) context.pop();
                   }
                 },

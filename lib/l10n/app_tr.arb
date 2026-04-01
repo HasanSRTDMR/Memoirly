@@ -38,6 +38,8 @@
   "addImage": "Görsel ekle",
   "textColor": "Yazı rengi",
   "textColorDefault": "Varsayılan",
+  "archiveListIcon": "Ana sayfa ikonu",
+  "archiveListIconAuto": "Otomatik",
   "entryDetail": "Kayıt",
   "edit": "Düzenle",
   "delete": "Sil",

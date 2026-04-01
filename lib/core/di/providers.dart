@@ -65,8 +65,10 @@ final journalEntriesStreamProvider =
   return ref.watch(watchEntriesUseCaseProvider).call();
 });
 
+/// Single-entry fetch for detail/edit; autoDispose + invalidate after saves keeps
+/// text in sync with the live journal stream.
 final entryByIdProvider =
-    FutureProvider.family<JournalEntry?, String>((ref, id) async {
+    FutureProvider.autoDispose.family<JournalEntry?, String>((ref, id) async {
   return ref.read(journalRepositoryProvider).getById(id);
 });
 

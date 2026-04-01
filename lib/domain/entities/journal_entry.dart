@@ -11,6 +11,7 @@ class JournalEntry extends Equatable {
     this.tags = const [],
     this.imagePaths = const [],
     this.contentColorArgb,
+    this.cardEmoji,
   });
 
   final String id;
@@ -24,6 +25,8 @@ class JournalEntry extends Equatable {
   final List<String> imagePaths;
   /// When set, body text is shown in this color in the reader (ARGB, 32-bit).
   final int? contentColorArgb;
+  /// Ana sayfa satırı için seçilen emoji; eski sürümde kısa ikon anahtarı da olabilir.
+  final String? cardEmoji;
 
   /// Title + body; counts Unicode letter/number runs (works for Turkish and Latin).
   int get wordCount {
@@ -51,8 +54,10 @@ class JournalEntry extends Equatable {
     List<String>? tags,
     List<String>? imagePaths,
     int? contentColorArgb,
+    String? cardEmoji,
     bool clearMood = false,
     bool clearContentColor = false,
+    bool clearCardEmoji = false,
   }) {
     return JournalEntry(
       id: id ?? this.id,
@@ -65,6 +70,7 @@ class JournalEntry extends Equatable {
       imagePaths: imagePaths ?? this.imagePaths,
       contentColorArgb:
           clearContentColor ? null : (contentColorArgb ?? this.contentColorArgb),
+      cardEmoji: clearCardEmoji ? null : (cardEmoji ?? this.cardEmoji),
     );
   }
 
@@ -79,5 +85,6 @@ class JournalEntry extends Equatable {
         tags,
         imagePaths,
         contentColorArgb,
+        cardEmoji,
       ];
 }

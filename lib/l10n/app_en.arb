@@ -38,6 +38,8 @@
   "addImage": "Add image",
   "textColor": "Text color",
   "textColorDefault": "Default",
+  "archiveListIcon": "Home icon",
+  "archiveListIconAuto": "Auto",
   "entryDetail": "Entry",
   "edit": "Edit",
   "delete": "Delete",

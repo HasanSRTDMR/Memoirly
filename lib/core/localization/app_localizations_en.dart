@@ -126,6 +126,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get textColorDefault => 'Default';
 
   @override
+  String get archiveListIcon => 'Home icon';
+
+  @override
+  String get archiveListIconAuto => 'Auto';
+
+  @override
   String get entryDetail => 'Entry';
 
   @override

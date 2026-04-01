@@ -125,6 +125,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get textColorDefault => 'Varsayılan';
 
   @override
+  String get archiveListIcon => 'Ana sayfa ikonu';
+
+  @override
+  String get archiveListIconAuto => 'Otomatik';
+
+  @override
   String get entryDetail => 'Kayıt';
 
   @override

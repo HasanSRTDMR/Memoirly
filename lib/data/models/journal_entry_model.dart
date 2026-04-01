@@ -12,6 +12,7 @@ class JournalEntryModel {
     this.tags = const [],
     this.imagePaths = const [],
     this.contentColorArgb,
+    this.cardEmoji,
   });
 
   final String id;
@@ -23,6 +24,7 @@ class JournalEntryModel {
   final List<String> tags;
   final List<String> imagePaths;
   final int? contentColorArgb;
+  final String? cardEmoji;
 
   JournalEntry toEntity() => JournalEntry(
         id: id,
@@ -34,6 +36,7 @@ class JournalEntryModel {
         tags: tags,
         imagePaths: imagePaths,
         contentColorArgb: contentColorArgb,
+        cardEmoji: cardEmoji,
       );
 
   factory JournalEntryModel.fromEntity(JournalEntry e) => JournalEntryModel(
@@ -46,6 +49,7 @@ class JournalEntryModel {
         tags: e.tags,
         imagePaths: e.imagePaths,
         contentColorArgb: e.contentColorArgb,
+        cardEmoji: e.cardEmoji,
       );
 
   factory JournalEntryModel.fromFirestore(
@@ -64,6 +68,7 @@ class JournalEntryModel {
       imagePaths:
           (d['imagePaths'] as List?)?.map((e) => e.toString()).toList() ?? [],
       contentColorArgb: (d['contentColorArgb'] as num?)?.toInt(),
+      cardEmoji: d['cardEmoji'] as String?,
     );
   }
 
@@ -75,6 +80,7 @@ class JournalEntryModel {
         'tags': tags,
         'imagePaths': imagePaths,
         'contentColorArgb': contentColorArgb,
+        'cardEmoji': cardEmoji != null ? cardEmoji! : FieldValue.delete(),
       };
 
   factory JournalEntryModel.fromJson(Map<String, dynamic> json) {
@@ -91,6 +97,7 @@ class JournalEntryModel {
               .toList() ??
           [],
       contentColorArgb: (json['contentColorArgb'] as num?)?.toInt(),
+      cardEmoji: json['cardEmoji'] as String?,
     );
   }
 
@@ -104,5 +111,6 @@ class JournalEntryModel {
         'tags': tags,
         'imagePaths': imagePaths,
         'contentColorArgb': contentColorArgb,
+        'cardEmoji': cardEmoji,
       };
 }
