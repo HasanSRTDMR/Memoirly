@@ -28,7 +28,7 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
     final useCase = ref.watch(computeInsightsUseCaseProvider);
 
     return Scaffold(
-      appBar: const ArchiveAppBar(),
+      appBar: ArchiveAppBar(title: l.insights),
       body: entriesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator.adaptive()),
         error: (e, _) => JournalStreamErrorView(

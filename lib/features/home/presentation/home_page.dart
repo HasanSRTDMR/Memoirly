@@ -32,7 +32,7 @@ class HomePage extends ConsumerWidget {
     final entriesAsync = ref.watch(journalEntriesStreamProvider);
 
     return Scaffold(
-      appBar: const ArchiveAppBar(),
+      appBar: ArchiveAppBar(title: l.home),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: WritingFab(
         heroTag: 'memoirly_fab_home',

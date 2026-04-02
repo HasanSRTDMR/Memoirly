@@ -54,7 +54,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: const ArchiveAppBar(),
+      appBar: ArchiveAppBar(title: l.calendar),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: WritingFab(
         heroTag: 'memoirly_fab_calendar',

@@ -37,14 +37,7 @@ class ArchiveAppBar extends StatelessWidget implements PreferredSizeWidget {
             title ?? l.archiveTitle,
             style: Theme.of(context).appBarTheme.titleTextStyle,
           ),
-          actions: [
-            ...?actions,
-            IconButton(
-              icon: const Icon(Icons.account_circle_outlined),
-              tooltip: l.account,
-              onPressed: () => ArchiveSheets.showAccount(context, ref),
-            ),
-          ],
+          
           backgroundColor:
               Theme.of(context).colorScheme.surface.withValues(alpha: 0.88),
         );

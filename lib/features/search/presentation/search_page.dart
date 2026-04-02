@@ -51,21 +51,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
     return Scaffold(
       appBar: ArchiveAppBar(
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8, top: 8, bottom: 8),
-            child: Center(
-              child: Text(
-                l.explore,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontFamily: 'Newsreader',
-                      fontStyle: FontStyle.italic,
-                      fontSize: 20,
-                    ),
-              ),
-            ),
-          ),
-        ],
+        title: l.search,       
       ),
       body: entriesAsync.when(
         loading: () =>
