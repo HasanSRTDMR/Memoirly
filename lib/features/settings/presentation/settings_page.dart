@@ -28,17 +28,16 @@ class SettingsPage extends ConsumerWidget {
     return Scaffold(
       appBar: ArchiveAppBar(title: l.settings),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(24, 8, 24, 120),
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 120),
         children: [
           Text(
-            l.settingsTitle,
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-          Text(
             l.settingsSubtitle,
-            style: Theme.of(context).textTheme.bodyMedium,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  height: 1.35,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
           ),
-          const SizedBox(height: 28),
+          const SizedBox(height: 32),
           _SectionTitle(icon: Icons.security_rounded, title: l.security),
           const SizedBox(height: 12),
           StreamBuilder<bool>(

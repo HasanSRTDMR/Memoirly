@@ -638,12 +638,6 @@ abstract class AppLocalizations {
   /// **'Recent entries carry harder feelings; be gentle with yourself.'**
   String get moodTonePhraseHeavy;
 
-  /// No description provided for @settingsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Settings'**
-  String get settingsTitle;
-
   /// No description provided for @settingsSubtitle.
   ///
   /// In en, this message translates to:

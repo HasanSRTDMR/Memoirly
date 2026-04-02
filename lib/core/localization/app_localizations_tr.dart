@@ -310,9 +310,6 @@ class AppLocalizationsTr extends AppLocalizations {
       'Son kayıtların daha zorlayıcı duygular taşıyor; kendine nazik ol.';
 
   @override
-  String get settingsTitle => 'Ayarlar';
-
-  @override
   String get settingsSubtitle => 'Özel alanını yapılandır';
 
   @override

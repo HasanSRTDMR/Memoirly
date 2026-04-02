@@ -311,9 +311,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Recent entries carry harder feelings; be gentle with yourself.';
 
   @override
-  String get settingsTitle => 'Settings';
-
-  @override
   String get settingsSubtitle => 'Configure your private sanctuary';
 
   @override
