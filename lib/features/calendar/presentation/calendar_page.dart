@@ -31,7 +31,8 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
 
   Set<DateTime> _daysWithEntries(List<JournalEntry> entries) {
     return entries
-        .map((e) => DateTime(e.createdAt.year, e.createdAt.month, e.createdAt.day))
+        .map((e) =>
+            DateTime(e.createdAt.year, e.createdAt.month, e.createdAt.day))
         .toSet();
   }
 
@@ -50,6 +51,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
     final locale = Localizations.localeOf(context).toString();
     final entriesAsync = ref.watch(journalEntriesStreamProvider);
     final firstWeekday = MaterialLocalizations.of(context).firstDayOfWeekIndex;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: const ArchiveAppBar(),
@@ -59,10 +61,11 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
         onPressed: () => context.push('/write'),
       ),
       body: entriesAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator.adaptive()),
+        loading: () =>
+            const Center(child: CircularProgressIndicator.adaptive()),
         error: (e, _) => JournalStreamErrorView(
-              message: describeJournalStreamError(e, l),
-            ),
+          message: describeJournalStreamError(e, l),
+        ),
         data: (entries) {
           final markers = _daysWithEntries(entries);
           final sel = _selectedDay ?? DateTime.now();
@@ -83,8 +86,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                       Expanded(
                         child: Text(
                           DateFormat.yMMMM(locale).format(_focusedMonth),
-                          style:
-                              Theme.of(context).textTheme.headlineMedium,
+                          style: Theme.of(context).textTheme.headlineMedium,
                         ),
                       ),
                       IconButton(
@@ -110,7 +112,9 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                   const SizedBox(height: 16),
                   DecoratedBox(
                     decoration: BoxDecoration(
-                      color: AppColors.surfaceContainerLow,
+                      color: isDark
+                          ? AppColors.onSurface
+                          : AppColors.surfaceContainerLow,
                       borderRadius: BorderRadius.circular(32),
                     ),
                     child: Padding(
@@ -120,6 +124,7 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                         firstWeekday: firstWeekday,
                         selectedDay: sel,
                         markers: markers,
+                        isDark: isDark,
                         onSelect: (d) => setState(() => _selectedDay = d),
                       ),
                     ),
@@ -130,14 +135,12 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
                       Expanded(
                         child: Text(
                           DateFormat.yMMMMEEEEd(locale).format(sel),
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge
-                              ?.copyWith(
-                                fontFamily: 'Newsreader',
-                                fontStyle: FontStyle.italic,
-                                fontSize: 22,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontFamily: 'Newsreader',
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 22,
+                                  ),
                         ),
                       ),
                       Text(
@@ -177,6 +180,7 @@ class _MonthGrid extends StatelessWidget {
     required this.selectedDay,
     required this.markers,
     required this.onSelect,
+    required this.isDark,
   });
 
   final DateTime month;
@@ -184,13 +188,13 @@ class _MonthGrid extends StatelessWidget {
   final DateTime selectedDay;
   final Set<DateTime> markers;
   final ValueChanged<DateTime> onSelect;
+  final bool isDark;
 
   @override
   Widget build(BuildContext context) {
     final daysInMonth = DateUtils.getDaysInMonth(month.year, month.month);
     final first = DateTime(month.year, month.month);
-    var leading =
-        (first.weekday - firstWeekday + 7) % 7;
+    var leading = (first.weekday - firstWeekday + 7) % 7;
     final cells = <int?>[];
 
     for (var i = 0; i < leading; i++) {
@@ -216,7 +220,9 @@ class _MonthGrid extends StatelessWidget {
                   labels[idx],
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         fontSize: 9,
-                        color: AppColors.onSurfaceVariant.withValues(alpha: 0.5),
+                        color: isDark
+                            ? AppColors.onSecondary.withValues(alpha: 0.5)
+                            : AppColors.onSurfaceVariant.withValues(alpha: 0.5),
                       ),
                 ),
               ),
@@ -257,17 +263,23 @@ class _MonthGrid extends StatelessWidget {
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: isSel ? AppColors.primary : Colors.transparent,
+                        color: isSel
+                            ? AppColors.primary
+                            : (isDark
+                                ? AppColors.onSurfaceVariant
+                                    .withValues(alpha: 0.1)
+                                : Colors.transparent),
                       ),
                       child: Text(
                         '$dayNum',
                         style: TextStyle(
-                          fontWeight:
-                              isSel ? FontWeight.bold : FontWeight.w500,
+                          fontWeight: isSel ? FontWeight.bold : FontWeight.w500,
                           fontSize: 13,
                           color: isSel
                               ? AppColors.onPrimary
-                              : AppColors.onSurface,
+                              : isDark
+                                  ? AppColors.surface
+                                  : AppColors.onSurface,
                         ),
                       ),
                     ),

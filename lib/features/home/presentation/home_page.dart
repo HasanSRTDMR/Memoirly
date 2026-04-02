@@ -128,15 +128,16 @@ class _StartWritingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Colors.black : Colors.white,
         borderRadius: BorderRadius.circular(40),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 48,
-            offset: const Offset(0, 24),
+            color: isDark ? Colors.black : Colors.white.withValues(alpha: 0.2),
+            blurRadius: 18,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
