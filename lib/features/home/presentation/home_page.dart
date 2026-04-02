@@ -9,7 +9,6 @@ import 'package:memoirly/core/error/journal_stream_error.dart'
     show JournalStreamErrorView, describeJournalStreamError;
 import 'package:memoirly/core/localization/app_localizations.dart';
 import 'package:memoirly/core/localization/mood_localizations.dart';
-import 'package:memoirly/core/theme/app_colors.dart';
 import 'package:memoirly/core/widgets/archive_app_bar.dart';
 import 'package:memoirly/core/widgets/writing_fab.dart';
 import 'package:memoirly/domain/entities/journal_entry.dart';
@@ -129,6 +128,7 @@ class _StartWritingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final scheme = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
         color: isDark ? Colors.black : Colors.white,
@@ -152,7 +152,7 @@ class _StartWritingCard extends StatelessWidget {
               height: 160,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.secondaryContainer.withValues(alpha: 0.25),
+                color: scheme.secondaryContainer.withValues(alpha: 0.25),
               ),
             ),
           ),
@@ -173,8 +173,8 @@ class _StartWritingCard extends StatelessWidget {
               const SizedBox(height: 20),
               DecoratedBox(
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [AppColors.primary, AppColors.primaryDim],
+                  gradient: LinearGradient(
+                    colors: [scheme.primary, scheme.primaryContainer],
                   ),
                   borderRadius: BorderRadius.circular(999),
                 ),
@@ -191,7 +191,7 @@ class _StartWritingCard extends StatelessWidget {
                       child: Text(
                         l.startWriting,
                         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                              color: AppColors.onPrimary,
+                              color: scheme.onPrimary,
                               letterSpacing: 1,
                             ),
                       ),
@@ -218,8 +218,9 @@ class _MoodChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Material(
-      color: AppColors.surfaceContainerHigh,
+      color: scheme.surfaceContainerHigh,
       borderRadius: BorderRadius.circular(999),
       child: InkWell(
         onTap: onTap,
@@ -231,7 +232,7 @@ class _MoodChip extends StatelessWidget {
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: AppColors.onSurfaceVariant,
+                  color: scheme.onSurfaceVariant,
                 ),
           ),
         ),
@@ -255,6 +256,7 @@ class _RecentEntryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final time = DateFormat.jm(locale).format(entry.createdAt);
     final preview = entry.content.trim().isEmpty
         ? '…'
@@ -281,7 +283,7 @@ class _RecentEntryTile extends StatelessWidget {
                   width: 2,
                   height: 52,
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceVariant,
+                    color: scheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -335,7 +337,7 @@ class _RecentEntryTile extends StatelessWidget {
                                   .textTheme
                                   .labelSmall
                                   ?.copyWith(
-                                    color: AppColors.primary,
+                                    color: scheme.primary,
                                     fontSize: 9,
                                   ),
                             ),

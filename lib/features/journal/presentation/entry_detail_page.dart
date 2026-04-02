@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:memoirly/core/di/providers.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
 import 'package:memoirly/core/localization/mood_localizations.dart';
-import 'package:memoirly/core/theme/app_colors.dart';
 import 'package:share_plus/share_plus.dart';
 
 class EntryDetailPage extends ConsumerWidget {
@@ -46,6 +45,8 @@ class EntryDetailPage extends ConsumerWidget {
             body: Center(child: Text(l.errorGeneric)),
           );
         }
+        final scheme = Theme.of(context).colorScheme;
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         final date = DateFormat.yMMMMd(locale).format(entry.createdAt);
         final time = DateFormat.jm(locale).format(entry.createdAt);
         final weekday = DateFormat.EEEE(locale).format(entry.createdAt);
@@ -80,7 +81,7 @@ class EntryDetailPage extends ConsumerWidget {
                       moodLabel(l, mood),
                       style: const TextStyle(fontSize: 11),
                     ),
-                    backgroundColor: AppColors.secondaryContainer,
+                    backgroundColor: scheme.secondaryContainer,
                     side: BorderSide.none,
                   ),
                 ),
@@ -89,8 +90,7 @@ class EntryDetailPage extends ConsumerWidget {
                 onPressed: () => context.push('/write?id=${entry.id}'),
               ),
               IconButton(
-                icon: const Icon(Icons.delete_outline_rounded,
-                    color: AppColors.error),
+                icon: Icon(Icons.delete_outline_rounded, color: scheme.error),
                 onPressed: () async {
                   final ok = await showDialog<bool>(
                     context: context,
@@ -123,11 +123,15 @@ class EntryDetailPage extends ConsumerWidget {
               padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.75),
+                  color: isDark
+                      ? scheme.surfaceContainerHigh.withValues(alpha: 0.92)
+                      : Colors.white.withValues(alpha: 0.75),
                   borderRadius: BorderRadius.circular(999),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
+                      color: isDark
+                          ? Colors.black.withValues(alpha: 0.35)
+                          : Colors.black.withValues(alpha: 0.08),
                       blurRadius: 40,
                     ),
                   ],
@@ -147,8 +151,8 @@ class EntryDetailPage extends ConsumerWidget {
                         icon: const Icon(Icons.ios_share_rounded, size: 20),
                         label: Text(l.shareEntry),
                         style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: AppColors.onPrimary,
+                          backgroundColor: scheme.primary,
+                          foregroundColor: scheme.onPrimary,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 24,
                             vertical: 12,
@@ -212,7 +216,7 @@ class EntryDetailPage extends ConsumerWidget {
                       .map(
                         (t) => Chip(
                           label: Text('#$t'),
-                          backgroundColor: AppColors.surfaceContainerLow,
+                          backgroundColor: scheme.surfaceContainerLow,
                           side: BorderSide.none,
                         ),
                       )

@@ -319,6 +319,7 @@ class _DayEntryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final time = DateFormat.jm(locale).format(entry.createdAt);
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
@@ -331,10 +332,14 @@ class _DayEntryTile extends StatelessWidget {
               width: 28,
               height: 28,
               decoration: BoxDecoration(
-                color: AppColors.surfaceContainerHighest,
+                color: scheme.surfaceContainerHighest,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.edit_note_rounded, size: 16),
+              child: Icon(
+                Icons.edit_note_rounded,
+                size: 16,
+                color: scheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(

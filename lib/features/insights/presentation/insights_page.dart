@@ -35,6 +35,9 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
               message: describeJournalStreamError(e, l),
             ),
         data: (entries) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final cardBg =
+              isDark ? AppColors.onSurface : AppColors.surfaceContainerLow;
           final weekly = useCase.fromEntries(entries);
           final moodSlice =
               useCase.entriesInPeriod(entries, _moodPeriod);
@@ -96,12 +99,13 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
                 overall: overallMood,
                 selectedPeriod: _moodPeriod,
                 onPeriodChanged: (p) => setState(() => _moodPeriod = p),
+                cardColor: cardBg,
               ),
               const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.all(22),
                 decoration: BoxDecoration(
-                  color: AppColors.surfaceContainerLow,
+                  color: cardBg,
                   borderRadius: BorderRadius.circular(28),
                 ),
                 child: Column(
@@ -206,8 +210,9 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
                                               child: DecoratedBox(
                                                 decoration: BoxDecoration(
                                                   color: isPeak
-                                                      ? AppColors.primary
-                                                      : AppColors
+                                                      ? theme.colorScheme.primary
+                                                      : theme
+                                                          .colorScheme
                                                           .secondaryContainer
                                                           .withValues(
                                                           alpha: isToday
@@ -269,12 +274,14 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
                           : l.insightsWordsAvgPerEntryLine(
                               weekly.avgWordsPerEntry,
                             ),
+                      cardColor: cardBg,
                     ),
                     const SizedBox(height: 12),
                     _StatCard(
                       title: l.themes,
                       subtitle: l.frequentlyTagged,
                       chips: topTags,
+                      cardColor: cardBg,
                     ),
                   ],
                 )
@@ -296,6 +303,7 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
                             : l.insightsWordsAvgPerEntryLine(
                                 weekly.avgWordsPerEntry,
                               ),
+                        cardColor: cardBg,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -304,6 +312,7 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
                         title: l.themes,
                         subtitle: l.frequentlyTagged,
                         chips: topTags,
+                        cardColor: cardBg,
                       ),
                     ),
                   ],
@@ -330,7 +339,8 @@ class _InsightsPageState extends ConsumerState<InsightsPage> {
                   children: moods.entries.map((e) {
                     return Chip(
                       label: Text('${moodLabel(l, e.key)} · ${e.value}'),
-                      backgroundColor: AppColors.secondaryContainer,
+                      backgroundColor:
+                          Theme.of(context).colorScheme.secondaryContainer,
                       side: BorderSide.none,
                     );
                   }).toList(),
@@ -456,7 +466,7 @@ class _MoodEmojiMeter extends StatelessWidget {
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(999),
-                          color: AppColors.primary,
+                          color: scheme.primary,
                         ),
                       ),
                     ),
@@ -468,7 +478,7 @@ class _MoodEmojiMeter extends StatelessWidget {
                       width: thumbSize,
                       height: thumbSize,
                       decoration: BoxDecoration(
-                        color: AppColors.primary,
+                        color: scheme.primary,
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: scheme.surface,
@@ -500,12 +510,14 @@ class _MoodValenceCard extends StatelessWidget {
     required this.overall,
     required this.selectedPeriod,
     required this.onPeriodChanged,
+    required this.cardColor,
   });
 
   final AppLocalizations l;
   final OverallMoodValence overall;
   final InsightPeriod selectedPeriod;
   final ValueChanged<InsightPeriod> onPeriodChanged;
+  final Color cardColor;
 
   @override
   Widget build(BuildContext context) {
@@ -517,7 +529,7 @@ class _MoodValenceCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLow,
+        color: cardColor,
         borderRadius: BorderRadius.circular(28),
       ),
       child: Column(
@@ -715,6 +727,7 @@ class _StatCard extends StatelessWidget {
   const _StatCard({
     required this.title,
     required this.subtitle,
+    required this.cardColor,
     this.wordsChartHint,
     this.wordsChartEmptyLabel,
     this.value,
@@ -726,6 +739,7 @@ class _StatCard extends StatelessWidget {
 
   final String title;
   final String subtitle;
+  final Color cardColor;
   final String? wordsChartHint;
   final String? wordsChartEmptyLabel;
   final String? value;
@@ -748,7 +762,7 @@ class _StatCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLow,
+        color: cardColor,
         borderRadius: BorderRadius.circular(28),
       ),
       child: Column(
@@ -808,8 +822,8 @@ class _StatCard extends StatelessWidget {
                               child: DecoratedBox(
                                 decoration: BoxDecoration(
                                   color: isPeak
-                                      ? AppColors.primary
-                                      : AppColors.secondaryContainer
+                                      ? theme.colorScheme.primary
+                                      : theme.colorScheme.secondaryContainer
                                           .withValues(alpha: 0.55),
                                   borderRadius: BorderRadius.circular(999),
                                 ),
@@ -861,7 +875,7 @@ class _StatCard extends StatelessWidget {
                     e.key.toUpperCase(),
                     style: const TextStyle(fontSize: 9, letterSpacing: 1),
                   ),
-                  backgroundColor: AppColors.secondaryContainer,
+                  backgroundColor: theme.colorScheme.secondaryContainer,
                   side: BorderSide.none,
                   padding: EdgeInsets.zero,
                 );

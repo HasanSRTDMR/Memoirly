@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
-import 'package:memoirly/core/theme/app_colors.dart';
-
 /// Maps Firestore / network errors to user-visible text (see logcat).
 String describeJournalStreamError(Object error, AppLocalizations l) {
   final s = error.toString();
@@ -29,10 +27,10 @@ class JournalStreamErrorView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.cloud_off_outlined,
               size: 56,
-              color: AppColors.onSurfaceVariant,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             const SizedBox(height: 16),
             Text(

@@ -12,7 +12,6 @@ import 'package:memoirly/core/constants/mood_keys.dart';
 import 'package:memoirly/core/di/providers.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
 import 'package:memoirly/core/localization/mood_localizations.dart';
-import 'package:memoirly/core/theme/app_colors.dart';
 import 'package:memoirly/domain/entities/journal_entry.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -163,6 +162,7 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
   }
 
   Widget _buildImageThumb(int index) {
+    final scheme = Theme.of(context).colorScheme;
     final path = _imagePaths[index];
     final file = File(path);
     final exists = file.existsSync();
@@ -181,18 +181,18 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                       file,
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => ColoredBox(
-                        color: AppColors.surfaceContainerHigh,
+                        color: scheme.surfaceContainerHigh,
                         child: Icon(
                           Icons.broken_image_outlined,
-                          color: AppColors.onSurfaceVariant,
+                          color: scheme.onSurfaceVariant,
                         ),
                       ),
                     )
                   : ColoredBox(
-                      color: AppColors.surfaceContainerHigh,
+                      color: scheme.surfaceContainerHigh,
                       child: Icon(
                         Icons.broken_image_outlined,
-                        color: AppColors.onSurfaceVariant,
+                        color: scheme.onSurfaceVariant,
                       ),
                     ),
             ),
@@ -201,7 +201,7 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
             top: -4,
             right: -4,
             child: Material(
-              color: AppColors.surfaceContainerLowest,
+              color: scheme.surfaceContainerLowest,
               shape: const CircleBorder(),
               elevation: 1,
               child: InkWell(
@@ -468,7 +468,7 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
           Icon(
             Icons.cloud_done_rounded,
             size: 18,
-            color: AppColors.onSurfaceVariant.withValues(alpha: 0.85),
+            color: cs.onSurfaceVariant.withValues(alpha: 0.85),
           ),
           const SizedBox(width: 6),
           Flexible(
@@ -558,9 +558,9 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                         ],
                       ),
                     ),
-                    const Icon(
+                    Icon(
                       Icons.edit_note_rounded,
-                      color: AppColors.outlineVariant,
+                      color: cs.outlineVariant,
                     ),
                   ],
                 ),
@@ -608,11 +608,11 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                                 shape: BoxShape.circle,
                                 color: argb != null
                                     ? Color(argb)
-                                    : AppColors.surfaceContainerHigh,
+                                    : cs.surfaceContainerHigh,
                                 border: Border.all(
                                   color: selected
                                       ? cs.primary
-                                      : AppColors.outlineVariant
+                                      : cs.outlineVariant
                                           .withValues(alpha: 0.5),
                                   width: selected ? 2 : 1,
                                 ),
@@ -683,7 +683,7 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                                     border: Border.all(
                                       color: archiveListAutoSelected
                                           ? cs.primary
-                                          : AppColors.outlineVariant
+                                          : cs.outlineVariant
                                               .withValues(alpha: 0.5),
                                       width: archiveListAutoSelected ? 2 : 1,
                                     ),
@@ -717,7 +717,7 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                                       border: Border.all(
                                         color: _cardEmoji == emoji
                                             ? cs.primary
-                                            : AppColors.outlineVariant
+                                            : cs.outlineVariant
                                                 .withValues(alpha: 0.5),
                                         width: _cardEmoji == emoji ? 2 : 1,
                                       ),
@@ -778,7 +778,7 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
               ),
             ),
             Material(
-                color: AppColors.surfaceContainerLow.withValues(alpha: 0.96),
+                color: cs.surfaceContainerLow.withValues(alpha: 0.96),
                 elevation: 12,
                 child: SafeArea(
                   top: false,
@@ -786,10 +786,10 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceContainerLow,
+                        color: cs.surfaceContainerLow,
                         borderRadius: BorderRadius.circular(36),
                         border: Border.all(
-                          color: AppColors.surfaceVariant.withValues(alpha: 0.4),
+                          color: cs.outlineVariant.withValues(alpha: 0.35),
                         ),
                       ),
                       child: Padding(
@@ -827,7 +827,7 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                                             child: CircleAvatar(
                                               radius: 20,
                                               backgroundColor: sel
-                                                  ? AppColors.secondaryContainer
+                                                  ? cs.secondaryContainer
                                                   : Colors.transparent,
                                               child: Icon(
                                                 [
@@ -872,7 +872,7 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                                             horizontal: 8,
                                           ),
                                           backgroundColor:
-                                              AppColors.secondaryContainer
+                                              cs.secondaryContainer
                                                   .withValues(alpha: 0.65),
                                           side: BorderSide.none,
                                         ),
@@ -887,10 +887,10 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                               cursorColor: onSurface,
                               scrollPadding: const EdgeInsets.only(bottom: 8),
                               decoration: InputDecoration(
-                                prefixIcon: const Icon(
+                                prefixIcon: Icon(
                                   Icons.sell_outlined,
                                   size: 20,
-                                  color: AppColors.outlineVariant,
+                                  color: cs.outlineVariant,
                                 ),
                                 hintText: l.addTags,
                                 border: InputBorder.none,
@@ -916,8 +916,8 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                                   },
                                   side: BorderSide.none,
                                   backgroundColor: _moodKey == k
-                                      ? AppColors.tertiaryContainer
-                                      : AppColors.surfaceContainerHigh,
+                                      ? cs.tertiaryContainer
+                                      : cs.surfaceContainerHigh,
                                 );
                               }).toList(),
                             ),

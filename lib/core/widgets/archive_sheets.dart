@@ -4,15 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:memoirly/core/config/app_backend.dart';
 import 'package:memoirly/core/di/providers.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
-import 'package:memoirly/core/theme/app_colors.dart';
-
 class ArchiveSheets {
   static Future<void> showQuickNav(BuildContext context) async {
     final l = AppLocalizations.of(context);
+    final sheetBg = Theme.of(context).colorScheme.surfaceContainerLow;
     await showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
-      backgroundColor: AppColors.surfaceContainerLow,
+      backgroundColor: sheetBg,
       builder: (ctx) {
         return SafeArea(
           child: SingleChildScrollView(
@@ -69,7 +68,7 @@ class ArchiveSheets {
     String path,
   ) {
     return ListTile(
-      leading: Icon(icon, color: AppColors.primary),
+      leading: Icon(icon, color: Theme.of(sheetCtx).colorScheme.primary),
       title: Text(title),
       onTap: () {
         Navigator.pop(sheetCtx);
@@ -86,10 +85,11 @@ class ArchiveSheets {
 
     if (!context.mounted) return;
 
+    final accountSheetBg = Theme.of(context).colorScheme.surfaceContainerLow;
     await showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
-      backgroundColor: AppColors.surfaceContainerLow,
+      backgroundColor: accountSheetBg,
       builder: (ctx) {
         final idPreview = uid == null
             ? '—'

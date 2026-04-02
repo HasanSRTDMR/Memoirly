@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:memoirly/core/theme/app_colors.dart';
-
 class WritingFab extends StatelessWidget {
   const WritingFab({
     super.key,
@@ -15,14 +13,15 @@ class WritingFab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final bottomInset = MediaQuery.paddingOf(context).bottom;
     return Padding(
       padding: EdgeInsets.only(bottom: 72 + bottomInset, right: 8),
       child: FloatingActionButton(
         heroTag: heroTag,
         onPressed: onPressed,
-        backgroundColor: AppColors.secondary,
-        foregroundColor: AppColors.onSecondary,
+        backgroundColor: scheme.secondary,
+        foregroundColor: scheme.onSecondary,
         elevation: 6,
         child: const Icon(Icons.add_rounded),
       ),

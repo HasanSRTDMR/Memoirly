@@ -405,7 +405,7 @@ class _ThemeChoice extends StatelessWidget {
               aspectRatio: 16 / 9,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: darkPreview ? const Color(0xFF1C1C1C) : scheme.surface,
+                  color: darkPreview ? const Color(0xFF1C1C1C) : Colors.white,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: scheme.outlineVariant.withValues(alpha: 0.2),
@@ -416,9 +416,7 @@ class _ThemeChoice extends StatelessWidget {
                     width: 48,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: darkPreview
-                          ? const Color(0xFF444444)
-                          : scheme.primary.withValues(alpha: 0.12),
+                      color:  const Color(0xFF444444),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
