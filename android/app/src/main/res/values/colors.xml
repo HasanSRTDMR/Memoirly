@@ -2,4 +2,5 @@
 <resources>
     <!-- Matches app light scaffold / surface so 3-button nav isn’t a black strip. -->
     <color name="app_navigation_bar">#FFF9F9F7</color>
+	<color name="ic_launcher_background">#F6EFE2</color>
 </resources>

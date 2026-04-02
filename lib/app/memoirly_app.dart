@@ -33,6 +33,7 @@ class MemoirlyApp extends ConsumerWidget {
           builder: (context, localeSnap) {
             final mode = themeSnap.data ?? ThemeMode.system;
             return MaterialApp.router(
+              title: 'Memoirly',
               debugShowCheckedModeBanner: false,
               routerConfig: router,
               locale: localeSnap.data ?? _memoirlyLocaleFallback(),

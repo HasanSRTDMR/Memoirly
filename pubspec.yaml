@@ -36,12 +36,32 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.4
+  image: ^4.8.0
 
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: assets/images/logo.png
+  # Önce: dart run tool/compose_launcher_icon.dart (logom.png → logom_launcher.png)
+  image_path: assets/images/logom_launcher.png
+  # Bitmap arka plan: bazı Android launcher’lar @color ile hatalı çizer.
+  adaptive_icon_background: assets/images/ic_launcher_adaptive_bg.png
+  # Şeffaf zeminli ön plan: daire içinde tek renk #F6EFE2 arka plandan gelir (beyaz halka yok).
+  adaptive_icon_foreground: assets/images/logom_android_fg.png
+  # Ek güvenli alan; çizim zaten compose ile %72 ölçekli.
+  adaptive_icon_foreground_inset: 18
   remove_alpha_ios: true
+  background_color_ios: "#F6EFE2"
+  web:
+    generate: true
+    image_path: assets/images/logom_launcher.png
+    background_color: "#F6EFE2"
+    theme_color: "#F6EFE2"
+  macos:
+    generate: true
+    image_path: assets/images/logom_launcher.png
+  windows:
+    generate: true
+    image_path: assets/images/logom_launcher.png
 
 flutter:
   uses-material-design: true

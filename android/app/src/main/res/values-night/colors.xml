@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="app_navigation_bar">#FF121412</color>
+    <!-- İkon önizlemesi / tema ile tutarlı adaptive arka plan -->
+    <color name="ic_launcher_background">#F6EFE2</color>
 </resources>
