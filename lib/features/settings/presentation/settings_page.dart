@@ -4,11 +4,13 @@ import 'dart:ui' show PlatformDispatcher;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:memoirly/core/di/providers.dart';
 import 'package:memoirly/core/import_export/journal_txt_codec.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
 import 'package:memoirly/core/widgets/archive_app_bar.dart';
 import 'package:memoirly/features/settings/presentation/pin_setup_sheet.dart';
+import 'package:memoirly/features/settings/presentation/profile_edit_dialog.dart';
 import 'package:share_plus/share_plus.dart';
 
 Locale _settingsLocaleFallback() {
@@ -38,6 +40,8 @@ class SettingsPage extends ConsumerWidget {
                 ),
           ),
           const SizedBox(height: 32),
+          _ProfileNameSection(),
+          const SizedBox(height: 28),
           _SectionTitle(icon: Icons.security_rounded, title: l.security),
           const SizedBox(height: 12),
           StreamBuilder<bool>(
@@ -275,6 +279,217 @@ class SettingsPage extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ProfileNameSection extends ConsumerWidget {
+  const _ProfileNameSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final async = ref.watch(userProfileStreamProvider);
+
+    return async.when(
+      loading: () => const Padding(
+        padding: EdgeInsets.symmetric(vertical: 24),
+        child: Center(child: CircularProgressIndicator.adaptive()),
+      ),
+      error: (_, __) => Padding(
+        padding: const EdgeInsets.all(16),
+        child: Text(l.errorGeneric),
+      ),
+      data: (p) {
+        final hasRealName = p.fullNameForGreeting.isNotEmpty;
+        final displayLine = hasRealName
+            ? p.fullNameForGreeting
+            : l.defaultGreetingName;
+        final email = p.email.trim();
+        final phone = p.phone.trim();
+        final initial = hasRealName
+            ? p.fullNameForGreeting.trim().characters.first.toUpperCase()
+            : '';
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _SectionTitle(
+              icon: Icons.person_outline_rounded,
+              title: l.profileSectionTitle,
+            ),
+            const SizedBox(height: 12),
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => showProfileEditDialog(
+                  context: context,
+                  initial: p,
+                ),
+                borderRadius: BorderRadius.circular(24),
+                child: Ink(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        scheme.surfaceContainerLow,
+                        scheme.surfaceContainerHigh.withValues(alpha: 0.85),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: scheme.outlineVariant.withValues(alpha: 0.35),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: scheme.onSurface.withValues(alpha: 0.06),
+                        blurRadius: 20,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 14, 6, 14),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _ProfileAvatar(
+                          scheme: scheme,
+                          hasRealName: hasRealName,
+                          initial: initial,
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  displayLine,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.newsreader(
+                                    fontSize: 21,
+                                    fontStyle: FontStyle.italic,
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.2,
+                                    color: scheme.onSurface,
+                                  ),
+                                ),
+                                if (email.isNotEmpty || phone.isNotEmpty)
+                                  const SizedBox(height: 6),
+                                if (email.isNotEmpty)
+                                  Text(
+                                    email,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.manrope(
+                                      fontSize: 12.5,
+                                      height: 1.35,
+                                      fontWeight: FontWeight.w500,
+                                      color: scheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                if (phone.isNotEmpty) ...[
+                                  if (email.isNotEmpty) const SizedBox(height: 3),
+                                  Text(
+                                    phone,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.manrope(
+                                      fontSize: 12.5,
+                                      height: 1.35,
+                                      fontWeight: FontWeight.w500,
+                                      color: scheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+                        IconButton.filledTonal(
+                          tooltip: l.profileEdit,
+                          onPressed: () => showProfileEditDialog(
+                            context: context,
+                            initial: p,
+                          ),
+                          style: IconButton.styleFrom(
+                            visualDensity: VisualDensity.compact,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: const EdgeInsets.all(10),
+                          ),
+                          icon: Icon(
+                            Icons.edit_rounded,
+                            size: 22,
+                            color: scheme.onSecondaryContainer,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _ProfileAvatar extends StatelessWidget {
+  const _ProfileAvatar({
+    required this.scheme,
+    required this.hasRealName,
+    required this.initial,
+  });
+
+  final ColorScheme scheme;
+  final bool hasRealName;
+  final String initial;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 56,
+      height: 56,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            scheme.secondaryContainer,
+            scheme.primaryContainer.withValues(alpha: 0.92),
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: scheme.primary.withValues(alpha: 0.12),
+            blurRadius: 14,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      alignment: Alignment.center,
+      child: hasRealName
+          ? Text(
+              initial,
+              style: GoogleFonts.newsreader(
+                fontSize: 24,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w600,
+                color: scheme.onSecondaryContainer,
+              ),
+            )
+          : Icon(
+              Icons.person_rounded,
+              size: 28,
+              color: scheme.onSecondaryContainer.withValues(alpha: 0.95),
+            ),
     );
   }
 }

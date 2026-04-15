@@ -5,10 +5,12 @@ import 'package:memoirly/core/config/app_backend.dart';
 import 'package:memoirly/data/datasources/firestore_daily_quote_datasource.dart';
 import 'package:memoirly/domain/entities/daily_quote.dart';
 import 'package:memoirly/domain/entities/journal_entry.dart';
+import 'package:memoirly/domain/entities/user_profile.dart';
 import 'package:memoirly/domain/repositories/auth_repository.dart';
 import 'package:memoirly/domain/repositories/journal_repository.dart';
 import 'package:memoirly/domain/repositories/security_repository.dart';
 import 'package:memoirly/domain/repositories/settings_repository.dart';
+import 'package:memoirly/domain/repositories/user_profile_repository.dart';
 import 'package:memoirly/domain/usecases/auth/sign_in_anonymous_usecase.dart';
 import 'package:memoirly/domain/usecases/insights/compute_insights_usecase.dart';
 import 'package:memoirly/domain/usecases/journal/create_entry_usecase.dart';
@@ -30,6 +32,10 @@ final authRepositoryProvider = Provider<AuthRepository>(
 
 final settingsRepositoryProvider = Provider<SettingsRepository>(
   (ref) => throw UnimplementedError('Override settingsRepositoryProvider'),
+);
+
+final userProfileRepositoryProvider = Provider<UserProfileRepository>(
+  (ref) => throw UnimplementedError('Override userProfileRepositoryProvider'),
 );
 
 final securityRepositoryProvider = Provider<SecurityRepository>(
@@ -63,6 +69,10 @@ final computeInsightsUseCaseProvider = Provider<ComputeInsightsUseCase>(
 final journalEntriesStreamProvider =
     StreamProvider<List<JournalEntry>>((ref) {
   return ref.watch(watchEntriesUseCaseProvider).call();
+});
+
+final userProfileStreamProvider = StreamProvider<UserProfile>((ref) {
+  return ref.watch(userProfileRepositoryProvider).watchProfile();
 });
 
 /// Single-entry fetch for detail/edit; autoDispose + invalidate after saves keeps

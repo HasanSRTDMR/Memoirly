@@ -50,13 +50,53 @@ class AppLocalizationsTr extends AppLocalizations {
   String get account => 'Hesap';
 
   @override
-  String get goodMorning => 'Günaydın, günlükçü';
+  String goodMorningName(String name) {
+    return 'Günaydın, $name';
+  }
 
   @override
-  String get goodAfternoon => 'İyi günler, günlükçü';
+  String goodAfternoonName(String name) {
+    return 'İyi günler, $name';
+  }
 
   @override
-  String get goodEvening => 'İyi akşamlar, günlükçü';
+  String goodEveningName(String name) {
+    return 'İyi akşamlar, $name';
+  }
+
+  @override
+  String get defaultGreetingName => 'günlükçü';
+
+  @override
+  String get profileSectionTitle => 'Profil';
+
+  @override
+  String get profileEdit => 'Düzenle';
+
+  @override
+  String get profileDialogTitle => 'Profil bilgileri';
+
+  @override
+  String get profileFirstName => 'Ad';
+
+  @override
+  String get profileLastName => 'Soyad';
+
+  @override
+  String get profileEmail => 'E-posta';
+
+  @override
+  String get profilePhone => 'Telefon (isteğe bağlı)';
+
+  @override
+  String get profileNameHint =>
+      'Ana sayfadaki selamda görünür. İsmi değiştirdiğinde önceki adların veritabanında saklanır.';
+
+  @override
+  String get profileSaveName => 'Adı kaydet';
+
+  @override
+  String get profileNameSaved => 'Kaydedildi';
 
   @override
   String get captureThoughts => 'Düşüncelerini yakala';

@@ -176,23 +176,89 @@ abstract class AppLocalizations {
   /// **'Account'**
   String get account;
 
-  /// No description provided for @goodMorning.
+  /// No description provided for @goodMorningName.
   ///
   /// In en, this message translates to:
-  /// **'Good morning, Journaler'**
-  String get goodMorning;
+  /// **'Good morning, {name}'**
+  String goodMorningName(String name);
 
-  /// No description provided for @goodAfternoon.
+  /// No description provided for @goodAfternoonName.
   ///
   /// In en, this message translates to:
-  /// **'Good afternoon, Journaler'**
-  String get goodAfternoon;
+  /// **'Good afternoon, {name}'**
+  String goodAfternoonName(String name);
 
-  /// No description provided for @goodEvening.
+  /// No description provided for @goodEveningName.
   ///
   /// In en, this message translates to:
-  /// **'Good evening, Journaler'**
-  String get goodEvening;
+  /// **'Good evening, {name}'**
+  String goodEveningName(String name);
+
+  /// No description provided for @defaultGreetingName.
+  ///
+  /// In en, this message translates to:
+  /// **'Journaler'**
+  String get defaultGreetingName;
+
+  /// No description provided for @profileSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileSectionTitle;
+
+  /// No description provided for @profileEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get profileEdit;
+
+  /// No description provided for @profileDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit profile'**
+  String get profileDialogTitle;
+
+  /// No description provided for @profileFirstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get profileFirstName;
+
+  /// No description provided for @profileLastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name'**
+  String get profileLastName;
+
+  /// No description provided for @profileEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get profileEmail;
+
+  /// No description provided for @profilePhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone (optional)'**
+  String get profilePhone;
+
+  /// No description provided for @profileNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown in the home greeting. Previous names stay saved when you change them.'**
+  String get profileNameHint;
+
+  /// No description provided for @profileSaveName.
+  ///
+  /// In en, this message translates to:
+  /// **'Save name'**
+  String get profileSaveName;
+
+  /// No description provided for @profileNameSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get profileNameSaved;
 
   /// No description provided for @captureThoughts.
   ///

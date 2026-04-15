@@ -50,13 +50,53 @@ class AppLocalizationsEn extends AppLocalizations {
   String get account => 'Account';
 
   @override
-  String get goodMorning => 'Good morning, Journaler';
+  String goodMorningName(String name) {
+    return 'Good morning, $name';
+  }
 
   @override
-  String get goodAfternoon => 'Good afternoon, Journaler';
+  String goodAfternoonName(String name) {
+    return 'Good afternoon, $name';
+  }
 
   @override
-  String get goodEvening => 'Good evening, Journaler';
+  String goodEveningName(String name) {
+    return 'Good evening, $name';
+  }
+
+  @override
+  String get defaultGreetingName => 'Journaler';
+
+  @override
+  String get profileSectionTitle => 'Profile';
+
+  @override
+  String get profileEdit => 'Edit';
+
+  @override
+  String get profileDialogTitle => 'Edit profile';
+
+  @override
+  String get profileFirstName => 'First name';
+
+  @override
+  String get profileLastName => 'Last name';
+
+  @override
+  String get profileEmail => 'Email';
+
+  @override
+  String get profilePhone => 'Phone (optional)';
+
+  @override
+  String get profileNameHint =>
+      'Shown in the home greeting. Previous names stay saved when you change them.';
+
+  @override
+  String get profileSaveName => 'Save name';
+
+  @override
+  String get profileNameSaved => 'Saved';
 
   @override
   String get captureThoughts => 'Capture your thoughts';

@@ -7,6 +7,7 @@ import 'package:memoirly/core/config/app_backend.dart';
 import 'package:memoirly/core/di/providers.dart';
 import 'package:memoirly/data/repositories/local_auth_repository.dart';
 import 'package:memoirly/data/repositories/local_journal_repository.dart';
+import 'package:memoirly/data/repositories/local_user_profile_repository.dart';
 import 'package:memoirly/data/repositories/settings_repository_impl.dart';
 import 'package:memoirly/domain/repositories/security_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,6 +48,7 @@ void main() {
     await auth.signInAnonymously();
     final uid = await auth.getCurrentUserId() ?? 't';
     final journal = LocalJournalRepository(prefs, userId: uid);
+    final profile = LocalUserProfileRepository(prefs);
     final settings = SettingsRepositoryImpl(prefs);
     await settings.setOnboardingCompleted(true);
     final security = _NoopSecurityRepo();
@@ -59,6 +61,7 @@ void main() {
           appBackendProvider.overrideWithValue(AppBackend.local),
           authRepositoryProvider.overrideWithValue(auth),
           journalRepositoryProvider.overrideWithValue(journal),
+          userProfileRepositoryProvider.overrideWithValue(profile),
           settingsRepositoryProvider.overrideWithValue(settings),
           securityRepositoryProvider.overrideWithValue(security),
         ],

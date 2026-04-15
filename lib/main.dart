@@ -13,12 +13,15 @@ import 'package:memoirly/core/config/app_backend.dart';
 import 'package:memoirly/core/di/providers.dart';
 import 'package:memoirly/data/repositories/firebase_auth_repository.dart';
 import 'package:memoirly/data/repositories/firebase_journal_repository.dart';
+import 'package:memoirly/data/repositories/firebase_user_profile_repository.dart';
 import 'package:memoirly/data/repositories/local_auth_repository.dart';
 import 'package:memoirly/data/repositories/local_journal_repository.dart';
+import 'package:memoirly/data/repositories/local_user_profile_repository.dart';
 import 'package:memoirly/data/repositories/security_repository_impl.dart';
 import 'package:memoirly/data/repositories/settings_repository_impl.dart';
 import 'package:memoirly/domain/repositories/auth_repository.dart';
 import 'package:memoirly/domain/repositories/journal_repository.dart';
+import 'package:memoirly/domain/repositories/user_profile_repository.dart';
 import 'package:memoirly/firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -62,6 +65,7 @@ Future<void> main() async {
 
   late final AuthRepository authRepo;
   late final JournalRepository journalRepo;
+  late final UserProfileRepository profileRepo;
   var backend = AppBackend.local;
 
   try {
@@ -83,6 +87,10 @@ Future<void> main() async {
       firestore: FirebaseFirestore.instance,
       userIdResolver: authRepo.getCurrentUserId,
     );
+    profileRepo = FirebaseUserProfileRepository(
+      firestore: FirebaseFirestore.instance,
+      userIdResolver: authRepo.getCurrentUserId,
+    );
     backend = AppBackend.firebase;
   } catch (e, st) {
     debugPrint('Firebase cloud journal unavailable, using local backend: $e\n$st');
@@ -90,6 +98,7 @@ Future<void> main() async {
     await authRepo.signInAnonymously();
     final uid = await authRepo.getCurrentUserId() ?? 'local';
     journalRepo = LocalJournalRepository(prefs, userId: uid);
+    profileRepo = LocalUserProfileRepository(prefs);
     backend = AppBackend.local;
   }
 
@@ -108,6 +117,7 @@ Future<void> main() async {
         appBackendProvider.overrideWithValue(backend),
         authRepositoryProvider.overrideWithValue(authRepo),
         journalRepositoryProvider.overrideWithValue(journalRepo),
+        userProfileRepositoryProvider.overrideWithValue(profileRepo),
         settingsRepositoryProvider.overrideWithValue(settingsRepo),
         securityRepositoryProvider.overrideWithValue(securityRepo),
       ],

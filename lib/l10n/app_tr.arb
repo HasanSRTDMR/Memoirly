@@ -13,9 +13,35 @@
   "archiveTitle": "Arşiv",
   "menu": "Menü",
   "account": "Hesap",
-  "goodMorning": "Günaydın, günlükçü",
-  "goodAfternoon": "İyi günler, günlükçü",
-  "goodEvening": "İyi akşamlar, günlükçü",
+  "goodMorningName": "Günaydın, {name}",
+  "@goodMorningName": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "goodAfternoonName": "İyi günler, {name}",
+  "@goodAfternoonName": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "goodEveningName": "İyi akşamlar, {name}",
+  "@goodEveningName": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "defaultGreetingName": "günlükçü",
+  "profileSectionTitle": "Profil",
+  "profileEdit": "Düzenle",
+  "profileDialogTitle": "Profil bilgileri",
+  "profileFirstName": "Ad",
+  "profileLastName": "Soyad",
+  "profileEmail": "E-posta",
+  "profilePhone": "Telefon (isteğe bağlı)",
+  "profileNameHint": "Ana sayfadaki selamda görünür. İsmi değiştirdiğinde önceki adların veritabanında saklanır.",
+  "profileSaveName": "Adı kaydet",
+  "profileNameSaved": "Kaydedildi",
   "captureThoughts": "Düşüncelerini yakala",
   "captureThoughtsBody": "Boş sayfa, netliğe davet. Aklında ne var?",
   "startWriting": "Yazmaya başla",

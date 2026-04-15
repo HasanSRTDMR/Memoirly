@@ -12,15 +12,20 @@ import 'package:memoirly/core/localization/mood_localizations.dart';
 import 'package:memoirly/core/widgets/archive_app_bar.dart';
 import 'package:memoirly/core/widgets/writing_fab.dart';
 import 'package:memoirly/domain/entities/journal_entry.dart';
+import 'package:memoirly/domain/entities/user_profile.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
-  String _greeting(AppLocalizations l, DateTime now) {
+  String _greetingWithName(
+    AppLocalizations l,
+    DateTime now,
+    String displayName,
+  ) {
     final h = now.hour;
-    if (h < 12) return l.goodMorning;
-    if (h < 17) return l.goodAfternoon;
-    return l.goodEvening;
+    if (h < 12) return l.goodMorningName(displayName);
+    if (h < 17) return l.goodAfternoonName(displayName);
+    return l.goodEveningName(displayName);
   }
 
   @override
@@ -30,6 +35,7 @@ class HomePage extends ConsumerWidget {
     final now = DateTime.now();
     final dateStr = DateFormat.yMMMMEEEEd(locale).format(now);
     final entriesAsync = ref.watch(journalEntriesStreamProvider);
+    final nameAsync = ref.watch(userProfileStreamProvider);
 
     return Scaffold(
       appBar: ArchiveAppBar(title: l.home),
@@ -44,6 +50,13 @@ class HomePage extends ConsumerWidget {
               message: describeJournalStreamError(e, l),
             ),
         data: (entries) {
+          final displayName = nameAsync.maybeWhen(
+            data: (v) => v,
+            orElse: () => const UserProfile(),
+          );
+          final greetingLabel = displayName.fullNameForGreeting.isEmpty
+              ? l.defaultGreetingName
+              : displayName.fullNameForGreeting;
           return LayoutBuilder(
             builder: (context, constraints) {
               final hPad = constraints.maxWidth < 360 ? 16.0 : 24.0;
@@ -56,7 +69,7 @@ class HomePage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    _greeting(l, now),
+                    _greetingWithName(l, now, greetingLabel),
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: 28),

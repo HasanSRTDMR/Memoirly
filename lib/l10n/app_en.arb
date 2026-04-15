@@ -13,9 +13,35 @@
   "archiveTitle": "The Archive",
   "menu": "Menu",
   "account": "Account",
-  "goodMorning": "Good morning, Journaler",
-  "goodAfternoon": "Good afternoon, Journaler",
-  "goodEvening": "Good evening, Journaler",
+  "goodMorningName": "Good morning, {name}",
+  "@goodMorningName": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "goodAfternoonName": "Good afternoon, {name}",
+  "@goodAfternoonName": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "goodEveningName": "Good evening, {name}",
+  "@goodEveningName": {
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "defaultGreetingName": "Journaler",
+  "profileSectionTitle": "Profile",
+  "profileEdit": "Edit",
+  "profileDialogTitle": "Edit profile",
+  "profileFirstName": "First name",
+  "profileLastName": "Last name",
+  "profileEmail": "Email",
+  "profilePhone": "Phone (optional)",
+  "profileNameHint": "Shown in the home greeting. Previous names stay saved when you change them.",
+  "profileSaveName": "Save name",
+  "profileNameSaved": "Saved",
   "captureThoughts": "Capture your thoughts",
   "captureThoughtsBody": "A blank page is an invitation to clarity. What's on your mind?",
   "startWriting": "Start Writing",
