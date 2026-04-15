@@ -101,6 +101,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get entryAutoSaveHint => 'Yazdıkça kaydedilir';
 
   @override
+  String get pickEntryDateTime => 'Tarih ve saat seç';
+
+  @override
   String get doneClose => 'Bitti';
 
   @override

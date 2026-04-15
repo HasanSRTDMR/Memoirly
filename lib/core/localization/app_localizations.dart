@@ -278,6 +278,12 @@ abstract class AppLocalizations {
   /// **'Saves as you write'**
   String get entryAutoSaveHint;
 
+  /// No description provided for @pickEntryDateTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick date & time'**
+  String get pickEntryDateTime;
+
   /// No description provided for @doneClose.
   ///
   /// In en, this message translates to:

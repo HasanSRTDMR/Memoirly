@@ -58,7 +58,12 @@ class _CalendarPageState extends ConsumerState<CalendarPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: WritingFab(
         heroTag: 'memoirly_fab_calendar',
-        onPressed: () => context.push('/write'),
+        onPressed: () {
+          final day = _selectedDay ?? DateTime.now();
+          final ymd =
+              '${day.year}-${day.month.toString().padLeft(2, '0')}-${day.day.toString().padLeft(2, '0')}';
+          context.push('/write?date=$ymd');
+        },
       ),
       body: entriesAsync.when(
         loading: () =>

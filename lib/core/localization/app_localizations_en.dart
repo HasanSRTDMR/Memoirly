@@ -102,6 +102,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get entryAutoSaveHint => 'Saves as you write';
 
   @override
+  String get pickEntryDateTime => 'Pick date & time';
+
+  @override
   String get doneClose => 'Done';
 
   @override

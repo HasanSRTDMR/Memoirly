@@ -10,6 +10,29 @@ import 'package:memoirly/features/search/presentation/search_page.dart';
 import 'package:memoirly/features/settings/presentation/settings_page.dart';
 import 'package:memoirly/features/shell/main_shell.dart';
 
+/// `YYYY-MM-DD` → o gün, şu anki saat (yerel). Geçersizse null.
+DateTime? _parseInitialEntryDate(String? raw) {
+  if (raw == null || raw.isEmpty) return null;
+  final parts = raw.split('-');
+  if (parts.length != 3) return null;
+  final y = int.tryParse(parts[0]);
+  final m = int.tryParse(parts[1]);
+  final d = int.tryParse(parts[2]);
+  if (y == null || m == null || d == null) return null;
+  if (m < 1 || m > 12 || d < 1 || d > 31) return null;
+  final now = DateTime.now();
+  return DateTime(
+    y,
+    m,
+    d,
+    now.hour,
+    now.minute,
+    now.second,
+    now.millisecond,
+    now.microsecond,
+  );
+}
+
 GoRouter createAppRouter({required String initialLocation}) {
   return GoRouter(
     navigatorKey: rootNavigatorKey,
@@ -74,7 +97,14 @@ GoRouter createAppRouter({required String initialLocation}) {
         builder: (context, state) {
           final id = state.uri.queryParameters['id'];
           final mood = state.uri.queryParameters['mood'];
-          return WriteEntryPage(entryId: id, initialMoodKey: mood);
+          final initialCreatedAt = _parseInitialEntryDate(
+            state.uri.queryParameters['date'],
+          );
+          return WriteEntryPage(
+            entryId: id,
+            initialMoodKey: mood,
+            initialCreatedAt: initialCreatedAt,
+          );
         },
       ),
       GoRoute(

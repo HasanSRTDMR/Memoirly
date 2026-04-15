@@ -18,10 +18,17 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 class WriteEntryPage extends ConsumerStatefulWidget {
-  const WriteEntryPage({super.key, this.entryId, this.initialMoodKey});
+  const WriteEntryPage({
+    super.key,
+    this.entryId,
+    this.initialMoodKey,
+    this.initialCreatedAt,
+  });
 
   final String? entryId;
   final String? initialMoodKey;
+  /// Yeni kayıt için başlangıç [createdAt] (ör. takvimden gelen gün).
+  final DateTime? initialCreatedAt;
 
   @override
   ConsumerState<WriteEntryPage> createState() => _WriteEntryPageState();
@@ -67,6 +74,9 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
     _body = TextEditingController();
     _tags = TextEditingController();
     _moodKey = widget.initialMoodKey;
+    if (widget.entryId == null) {
+      _entryCreatedAt = widget.initialCreatedAt ?? DateTime.now();
+    }
   }
 
   @override
@@ -158,6 +168,35 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
   void _removeImageAt(int index) {
     if (index < 0 || index >= _imagePaths.length) return;
     setState(() => _imagePaths.removeAt(index));
+    _scheduleDebouncedSave();
+  }
+
+  Future<void> _pickEntryDateTime() async {
+    final initial = _entryCreatedAt ?? DateTime.now();
+    final date = await showDatePicker(
+      context: context,
+      initialDate: DateTime(initial.year, initial.month, initial.day),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+    if (!mounted || date == null) return;
+
+    final time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(initial),
+    );
+    if (!mounted) return;
+
+    final t = time ?? TimeOfDay.fromDateTime(initial);
+    setState(() {
+      _entryCreatedAt = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        t.hour,
+        t.minute,
+      );
+    });
     _scheduleDebouncedSave();
   }
 
@@ -287,10 +326,9 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
         debugPrint('WriteEntry getById: $e\n$st');
         existing = null;
       }
-      final resolvedCreated =
-          existing?.createdAt ?? _entryCreatedAt ?? DateTime.now();
-      _entryCreatedAt ??= resolvedCreated;
-      final createdAt = resolvedCreated;
+      final createdAt =
+          _entryCreatedAt ?? existing?.createdAt ?? DateTime.now();
+      _entryCreatedAt = createdAt;
 
       final entry = JournalEntry(
         id: id,
@@ -416,9 +454,11 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
   ) {
     _ensureListeners();
 
-    final now = DateTime.now();
-    final header = DateFormat.yMMMMd(locale).format(now);
-    final sub = DateFormat.EEEE(locale).format(now);
+    final entryMoment = _entryCreatedAt ?? DateTime.now();
+    final header = DateFormat.yMMMMd(locale).format(entryMoment);
+    final sub = DateFormat.EEEE(locale).format(entryMoment);
+    final timeLine =
+        '${DateFormat.jm(locale).format(entryMoment)} · $sub';
 
     final viewPaddingBottom = MediaQuery.paddingOf(context).bottom;
     /// Reserve space when scrolling focused fields (legacy overlay height).
@@ -535,34 +575,50 @@ class _WriteEntryPageState extends ConsumerState<WriteEntryPage> {
                 padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
                 keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                 children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: _pickEntryDateTime,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Text(
-                            header,
-                            style:
-                                Theme.of(context).textTheme.titleLarge?.copyWith(
-                                      fontFamily: 'Manrope',
-                                      fontStyle: FontStyle.normal,
-                                      fontWeight: FontWeight.w800,
-                                    ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  header,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(
+                                        fontFamily: 'Manrope',
+                                        fontStyle: FontStyle.normal,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                ),
+                                Text(
+                                  timeLine,
+                                  style:
+                                      Theme.of(context).textTheme.labelSmall,
+                                ),
+                              ],
+                            ),
                           ),
-                          Text(
-                            '${DateFormat.jm(locale).format(now)} · $sub',
-                            style: Theme.of(context).textTheme.labelSmall,
+                          Tooltip(
+                            message: l.pickEntryDateTime,
+                            child: Icon(
+                              Icons.calendar_month_rounded,
+                              color: cs.primary,
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(
-                      Icons.edit_note_rounded,
-                      color: cs.outlineVariant,
-                    ),
-                  ],
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Row(
