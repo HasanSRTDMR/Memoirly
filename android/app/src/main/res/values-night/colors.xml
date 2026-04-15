@@ -3,4 +3,9 @@
     <color name="app_navigation_bar">#FF121412</color>
     <!-- İkon önizlemesi / tema ile tutarlı adaptive arka plan -->
     <color name="ic_launcher_background">#F6EFE2</color>
+
+    <color name="widget_quote_card_bg">#FF0D0F0E</color>
+    <color name="widget_quote_icon">#FF3D4441</color>
+    <color name="widget_quote_body">#FFE2E6E4</color>
+    <color name="widget_quote_author">#FF9DA39F</color>
 </resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Fallback when API &lt; 26 (no autoSize); API 26+ uses layout-v26 -->
+    <dimen name="widget_quote_body_size">18sp</dimen>
+    <dimen name="widget_quote_author_size">11sp</dimen>
+</resources>

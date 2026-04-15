@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="daily_quote_widget_label">Memoirly — Günlük söz</string>
+    <string name="daily_quote_widget_description">Bugünün sözünü ana ekranda gösterir; uygulamayı açarak güncellenir.</string>
+    <string name="widget_quote_placeholder">Memoirly’yi açarak bugünün sözünü yükle.</string>
+</resources>

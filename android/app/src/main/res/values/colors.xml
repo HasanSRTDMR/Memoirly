@@ -3,4 +3,10 @@
     <!-- Matches app light scaffold / surface so 3-button nav isn’t a black strip. -->
     <color name="app_navigation_bar">#FFF9F9F7</color>
 	<color name="ic_launcher_background">#F6EFE2</color>
+
+    <!-- Daily quote widget — aligned with AppColors / _DailyQuoteCard -->
+    <color name="widget_quote_card_bg">#FFFFFFFF</color>
+    <color name="widget_quote_icon">#FFADB3B0</color>
+    <color name="widget_quote_body">#FF2D3432</color>
+    <color name="widget_quote_author">#FF5A605E</color>
 </resources>

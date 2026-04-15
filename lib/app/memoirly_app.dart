@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:memoirly/core/di/providers.dart';
+import 'package:memoirly/core/home_screen/daily_quote_home_widget_sync.dart';
 import 'package:memoirly/core/localization/app_localizations.dart';
 import 'package:memoirly/core/theme/app_theme.dart';
 import 'package:memoirly/features/security/presentation/pin_unlock_overlay.dart';
@@ -64,8 +65,14 @@ class MemoirlyApp extends ConsumerWidget {
                 );
                 return ColoredBox(
                   color: navScrim,
-                  child: PinUnlockOverlay(
-                    child: child ?? const SizedBox.shrink(),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      const DailyQuoteHomeWidgetSync(),
+                      PinUnlockOverlay(
+                        child: child ?? const SizedBox.shrink(),
+                      ),
+                    ],
                   ),
                 );
               },
